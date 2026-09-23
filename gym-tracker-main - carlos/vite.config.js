@@ -8,7 +8,7 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'Gym Tracker',
+        name: 'Gym Tracker Carlos',
         short_name: 'Gym',
         description: 'Registro de entrenamientos',
         theme_color: '#0f172a',
