@@ -1,6 +1,9 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = 'https://zsciwodmsmmujqqlwpnq.supabase.co';
-const supabaseKey = 'sb_publishable_o0S0BOik2CN0mO2oG4kVlA_Ys4iUkZa';
+// URL corregida (sin el /rest/v1/)
+const supabaseUrl = 'https://rjztdqxkninaxrgizosb.supabase.co'
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+// Clave pública (Anon Key)
+const supabaseKey = 'sb_publishable_B-oBhmYXPDTxUYhpKo6o_A_TapFJYP2'
+
+export const supabase = createClient(supabaseUrl, supabaseKey)
