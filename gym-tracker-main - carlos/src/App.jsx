@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo, useCallback } from 'react';
 import { supabase } from './supabaseClient';
 
 // ============================================================================
-// 1. CONSTANTES, CONFIGURACIÓN Y DICCIONARIOS
+// 1. CONSTANTES, CONFIGURACIÓN Y DICCIONARIOS (CARLOS)
 // ============================================================================
 const tema = { bg: '#000000', card: '#161616', text: '#ffffff', textMuted: '#8a8a8e', border: '#2a2a2a', radius: '24px' };
 const appStyle = { minHeight: '100vh', backgroundColor: tema.bg, color: tema.text, fontFamily: '-apple-system, sans-serif', padding: '24px 16px', boxSizing: 'border-box' };
@@ -14,28 +14,39 @@ const navItemStyle = { ...cardStyle, display: 'flex', justifyContent: 'space-bet
 const LINK_RESERVA_GIMNASIO = "https://deportesurjc.i2a.es/CronosWeb/Login";
 
 const INFO_EJERCICIOS = {
-  "Calentamiento": "Calentamiento General (5-10 minutos)\nEjercicio cardiovascular de intensidad moderada, como la bicicleta estática, trotar o saltar la cuerda.\n\nEstiramientos Dinámicos\n• 10 balanceos de pierna (adelante y atrás) por lado.\n• 10 balanceos de pierna (de lado a lado) por lado.\n• 10 rotaciones de brazos hacia adelante.\n• 10 rotaciones de brazos hacia atrás.\n• 10 cruces de brazos (adelante y atrás).\n• 10 zancadas combinadas con rotación del torso.\n\nSeries de Aproximación\n5 repeticiones usando el 50% del peso de trabajo.",
-  "Press Banca": "(Biserie, 45s de descanso): Press de Banca con Mancuernas (4x8) + Remo Pendlay (4x8).",
-  "Remo Pendlay": "(Biserie, 45s de descanso): Press de Banca (4x8) + Remo Pendlay (4x8).",
-  "Dominadas": "(Biserie, 45s descanso) Dominadas lastradas (3x8) + Fondos lastrados (3x10).",
-  "Fondos": "Bloque B (Biserie, 45s de descanso): Dominadas Lastradas (3x6-8) + Fondos Lastrados (3x8-10).\n\nTécnica: Descenso hasta romper paralela (90º). Torso inclinado adelante.",
-  "Curl Martillo": "Curl Martillo Pesado (3x10).",
-  "Sentadilla Frontal": "Sentadilla Frontal (4x6).",
-  "Rumano": "Peso muerto Rumano (3x8).",
-  "Búlgaras": "Búlgaras (3x8).",
-  "Swings": "Kettlebell swings (4x20).",
-  "Plancha": "Estructura: 3 series al fallo.\n\nTécnica: Apoyo en antebrazos. Retroversión pélvica, contracción profunda del abdomen. Lastre en espalda media.",
-  "Turco": "Levantamiento Turco, (3x5 por lado).",
-  "Bici Estática (min)": "Estructura: Base Aeróbica (Zona 1), 45-60 min.\n\nTécnica: Ritmo conversacional estricto (respiración nasal).",
-  "Bici Estática HIIT": "Estructura: HIIT 1:1, 10 rondas de 20s sprint máximo / 20s recuperación.",
-  "Movilidad": "Estructura: 15 minutos.\n\nTécnica: Apertura torácica y rotación de cadera.",
-  "Flexiones Explosivas": "Bloque 1 (EMOM 10 min): 10 Flexiones explosivas + 5 Dominadas a realizar dentro de cada minuto, descansando el tiempo restante del minuto.",
-  "Curls Barra Z": "Bloque 2 (EMOM 10 min): 8 Curls Z + 8 Ext. Tríceps + 8 Elev. Laterales a realizar dentro de cada minuto, descansando el tiempo restante del minuto.",
-  "Extensión Tríceps": "Bloque 2 (EMOM 10 min): 8 Curls Z + 8 Ext. Tríceps + 8 Elev. Laterales a realizar dentro de cada minuto, descansando el tiempo restante del minuto.",
-  "Elevaciones Laterales": "Bloque 2 (EMOM 10 min): 8 Curls Z + 8 Ext. Tríceps + 8 Elev. Laterales a realizar dentro de cada minuto, descansando el tiempo restante del minuto.",
-  "Cuello": "Estructura: 10 minutos de isometrías en 4 vectores.\n\nTécnica: 15-20 segundos de tensión por lado.",
-  "Hexagonal": "Peso muerto hexagonal o convencional (4x5) con subida explosiva.",
-  "Granjero": "Paseo del granjero (4x40 metros).\n\nTécnica: Agarre firme, escápulas retraídas, mirada al frente. Pasos cortos y rápidos."
+  "Calentamiento": "Calentamiento General (5-10 minutos)\nEjercicio cardiovascular moderado y movilidad articular.",
+  "Press Banca": "Banca 65kg (10/7/5) - Mantener",
+  "Banca Máquina": "Banca Máquina 37.5kg (12/12/7) - Mantener",
+  "Inclinado": "Inclinado 25kg - Mantener",
+  "Inclinado con Mancuernas": "Inclinado con Mancuernas 22kg - Mantener",
+  "Barra Inclinado": "Barra Inclinado 55kg",
+  "Cruces Alto": "Cruces Alto 32kg (10/10/10) - Subir",
+  "Cruces Bajo": "Cruces Bajo 18kg - Subir",
+  "Polea Baja": "Polea Baja 7.9kg - Subir",
+  "Polea Alta": "Polea Alta 12.5kg (27 10x3) - Subir",
+  "Tríceps Katana": "Tríceps Katana 32kg (12/10/8) - Mantener",
+  "Inclinado Máquina": "Inclinado Máquina 27.5kg (10/8/8)",
+  "Apertura en Máquina": "Apertura en Máquina 66kg (12/10/7) - Mantener",
+  "Elevaciones Laterales con Mancuernas": "Elevaciones Laterales con Mancuernas 10kg - Subir",
+  "Elevaciones Laterales en Máquina": "Elevaciones Laterales en Máquina 8.75kg - Subir",
+  "Elevaciones Laterales en Polea": "Elevaciones Laterales en Polea 9kg - Mantener/Subir",
+  "Remo en Barra": "Remo en Barra 60kg (12x3)",
+  "Remo en Polea": "Remo en Polea 59kg (12x3) - Mantener",
+  "Remo en Polea Unilateral": "Remo en Polea Unilateral 59kg - Subir",
+  "Jalón al Pecho": "Jalón al Pecho 59kg (10/10/10) - Mantener",
+  "Alas": "Alas 23kg (14.7 12/10/7) - Mantener",
+  "Facepull": "Facepull 32kg (12x3)",
+  "Facepull Unilateral": "Facepull Unilateral 14kg - Subir",
+  "Curl Martillo": "Curl Martillo 18kg (12/12/12) - Mantener",
+  "Bíceps en Barra Z": "Bíceps en Barra Z 7.5kg por lado (12/9/8) - Mantener",
+  "Sentadilla con Barra": "Sentadilla con Barra 40kg - Subir",
+  "Extensión de Cuádriceps": "Extensión de Cuádriceps 110 lb - Subir",
+  "Hacka": "Hacka 20kg por lado - Subir",
+  "Femoral Sentado": "Femoral Sentado 41kg - Subir",
+  "Búlgara en Máquina": "Búlgara en Máquina - Sin peso específico",
+  "Abductor": "Abductor 32kg - Subir",
+  "Aductores": "Aductores 32kg - Subir",
+  "Abdomen Máquina": "Abdomen Máquina 36kg - Subir"
 };
 
 const obtenerInfoEjercicio = (nombre) => {
@@ -221,7 +232,7 @@ const GraficoSVG = ({ historial, rango }) => {
 };
 
 // ============================================================================
-// 4. APLICACIÓN PRINCIPAL
+// 4. APLICACIÓN PRINCIPAL (CARLOS)
 // ============================================================================
 export default function App() {
   const [vista, setVista] = useState('menu'); 
@@ -352,7 +363,6 @@ export default function App() {
     return () => clearInterval(intervalo);
   }, [estadoCalentamiento.activo, estadoCalentamiento.inicioTick, estadoCalentamiento.acumuladoPrevio]);
 
-  // Hook Reloj Bucle Unificado
   useEffect(() => {
     let intervalo = null;
     const emomActivo = Object.values(emomTimers).some(t => t.activo);
@@ -367,40 +377,8 @@ export default function App() {
     return () => clearInterval(intervalo);
   }, [emomTimers, ejTimers, hiitTimers]);
 
-  useEffect(() => {
-    let changed = false;
-    const newTimers = { ...emomTimers };
-    Object.keys(newTimers).forEach(bIndex => {
-      const t = newTimers[bIndex];
-      if (t.activo && t.inicioTick) {
-        const curr = t.acumuladoPrevio + Math.floor((Date.now() - t.inicioTick) / 1000);
-        if (curr >= 600) {
-          newTimers[bIndex] = { activo: false, inicioTick: null, acumuladoPrevio: 600 };
-          changed = true;
-        }
-      }
-    });
-    if (changed) setEmomTimers(newTimers);
-  }, [now, emomTimers]);
-
-  useEffect(() => {
-    let changed = false;
-    const newTimers = { ...hiitTimers };
-    Object.keys(newTimers).forEach(ej => {
-      const t = newTimers[ej];
-      if (t.activo && t.inicioTick) {
-        const curr = t.acumulado + Math.floor((Date.now() - t.inicioTick) / 1000);
-        if (curr >= 400) {
-          newTimers[ej] = { activo: false, inicioTick: null, acumulado: 400 };
-          changed = true;
-        }
-      }
-    });
-    if (changed) setHiitTimers(newTimers);
-  }, [now, hiitTimers]);
-
   // --------------------------------------------------------------------------
-  // MÉTODOS DE CONTROL CRONÓMETROS INDIVIDUALES (HIIT y EJERCICIOS NORMALES)
+  // MÉTODOS DE CONTROL CRONÓMETROS
   // --------------------------------------------------------------------------
   const toggleEjTimer = (ej) => {
     setEjTimers(prev => {
@@ -440,7 +418,7 @@ export default function App() {
   };
 
   const resetHiit = (ej) => {
-    if (window.confirm("¿Seguro que quieres reiniciar el cronómetro de HIIT a 0?")) {
+    if (window.confirm("¿Reiniciar cronómetro HIIT a 0?")) {
       setHiitTimers(prev => ({ ...prev, [ej]: { activo: false, inicioTick: null, acumulado: 0 } }));
     }
   };
@@ -452,27 +430,6 @@ export default function App() {
       total += Math.floor((now - t.inicioTick) / 1000);
     }
     return total;
-  };
-
-  // --------------------------------------------------------------------------
-  // MÉTODOS DE CONTROL EMOM
-  // --------------------------------------------------------------------------
-  const toggleEmom = (bIndex) => {
-    setEmomTimers(prev => {
-      const current = prev[bIndex] || { activo: false, inicioTick: null, acumuladoPrevio: 0 };
-      if (current.activo) {
-        const elapsed = Math.floor((Date.now() - current.inicioTick) / 1000);
-        return { ...prev, [bIndex]: { activo: false, inicioTick: null, acumuladoPrevio: current.acumuladoPrevio + elapsed } };
-      } else {
-        return { ...prev, [bIndex]: { ...current, activo: true, inicioTick: Date.now() } };
-      }
-    });
-  };
-
-  const resetEmom = (bIndex) => {
-    if (window.confirm("¿Seguro que quieres reiniciar el cronómetro de este EMOM a 0?")) {
-      setEmomTimers(prev => ({ ...prev, [bIndex]: { activo: false, inicioTick: null, acumuladoPrevio: 0 } }));
-    }
   };
 
   // --------------------------------------------------------------------------
@@ -494,18 +451,7 @@ export default function App() {
     setCargando(true);
     try {
       const idSesion = await asegurarSesion();
-      let totalSegundos = 0;
-      
-      if (esRegistroPasado) {
-          const m = parseInt(calentamientoManual.min) || 0;
-          const s = parseInt(calentamientoManual.sec) || 0;
-          totalSegundos = (m * 60) + s;
-      } else {
-          totalSegundos = estadoCalentamiento.acumuladoPrevio;
-          if (estadoCalentamiento.activo && estadoCalentamiento.inicioTick) {
-            totalSegundos += Math.floor((Date.now() - estadoCalentamiento.inicioTick) / 1000);
-          }
-      }
+      let totalSegundos = esRegistroPasado ? ((parseInt(calentamientoManual.min) || 0) * 60) + (parseInt(calentamientoManual.sec) || 0) : estadoCalentamiento.acumuladoPrevio;
 
       if (totalSegundos === 0) {
         alert("Introduce un tiempo válido.");
@@ -519,7 +465,6 @@ export default function App() {
         categoria: 'calentamiento',
         tiempo_segundos: totalSegundos
       }]);
-      
       if (errSerie) throw errSerie;
       
       setEstadoCalentamiento({ activo: false, inicioTick: null, acumuladoPrevio: 0, mostrandoInfo: false });
@@ -549,116 +494,38 @@ export default function App() {
     if (cat === 'fuerza' || cat === 'emom') {
         repsGuardar = repsNum;
     } else if (cat === 'hiit') {
-        if (esRegistroPasado) {
-            repsGuardar = repsNum;
-        } else {
-            repsGuardar = hSegs >= 400 ? 10 : Math.floor(hSegs / 40) + 1;
-            if (hSegs === 0) repsGuardar = null; 
-        }
-    } else if (cat === 'traslado') {
-        distanciaGuardar = repsNum;
+        repsGuardar = esRegistroPasado ? repsNum : (hSegs >= 400 ? 10 : Math.floor(hSegs / 40) + 1);
+        if (!esRegistroPasado && hSegs === 0) repsGuardar = null;
     } else if (cat === 'isometria' || cat === 'movilidad' || cat === 'cardio') {
-        if (esRegistroPasado) {
-            const m = parseInt(datos.mins) || 0;
-            const s = parseInt(datos.secs) || 0;
-            tiempoGuardar = (m * 60) + s;
-        } else {
-            tiempoGuardar = tSegs > 0 ? tSegs : null;
-        }
+        tiempoGuardar = esRegistroPasado ? ((parseInt(datos.mins) || 0) * 60) + (parseInt(datos.secs) || 0) : (tSegs > 0 ? tSegs : null);
     }
 
     if (!repsGuardar && !tiempoGuardar && !distanciaGuardar && !(cat === 'isometria' && pesoNum)) {
-       alert('Falta introducir repeticiones, tiempo o iniciar el cronómetro.'); 
+       alert('Falta introducir datos.'); 
        return;
     }
 
     setCargando(true);
-    
     try {
       const idSesion = await asegurarSesion();
-
       const { error: errSerie } = await supabase.from('series').insert([{
         sesion_id: idSesion,
         ejercicio: nombreEj,
         categoria: cat,
-        peso_kg: (cat === 'fuerza' || cat === 'traslado' || cat === 'isometria' || cat === 'emom' || cat === 'hiit') ? pesoNum : null,
+        peso_kg: pesoNum,
         repeticiones: repsGuardar,
         tiempo_segundos: tiempoGuardar,
         distancia_metros: distanciaGuardar
       }]);
-      
       if (errSerie) throw errSerie;
       
-      setEstadoRutina(prev => ({ ...prev, [nombreEj]: { ...(prev[nombreEj] || {}), peso: '', reps: '', mins: '', secs: '', completado: false } }));
+      setEstadoRutina(prev => ({ ...prev, [nombreEj]: { ...(prev[nombreEj] || {}), peso: '', reps: '', mins: '', secs: '' } }));
       setEjTimers(prev => ({ ...prev, [nombreEj]: { activo: false, inicioTick: null, acumulado: 0 } }));
       setHiitTimers(prev => ({ ...prev, [nombreEj]: { activo: false, inicioTick: null, acumulado: 0 } }));
       
       await cargarDatos();
     } catch (err) {
       alert(`Error: ${err.message}`);
-    } finally {
-      setCargando(false);
-    }
-  };
-
-  const registrarBloqueEMOM = async (ejerciciosDelBloque, bIndex) => {
-    let rondas = 0;
-
-    if (esRegistroPasado) {
-        rondas = parseInt(estadoRutina[`EMOM_RONDAS_${bIndex}`]) || 0;
-    } else {
-        const timerState = emomTimers[bIndex] || { activo: false, inicioTick: null, acumuladoPrevio: 0 };
-        let totalSegundos = timerState.acumuladoPrevio;
-        if (timerState.activo && timerState.inicioTick) {
-          totalSegundos += Math.floor((Date.now() - timerState.inicioTick) / 1000);
-        }
-        rondas = Math.floor(totalSegundos / 60) + 1;
-        if (totalSegundos >= 600) rondas = 10;
-        if (totalSegundos === 0) rondas = 0;
-    }
-
-    if (rondas === 0) {
-      alert(esRegistroPasado ? 'Introduce el número de rondas completadas.' : 'No has iniciado el cronómetro EMOM. Inícialo para registrar al menos 1 ronda.');
-      return;
-    }
-
-    setCargando(true);
-    try {
-      const idSesion = await asegurarSesion();
-      const inserts = [];
-
-      ejerciciosDelBloque.forEach(ej => {
-        const datos = estadoRutina[ej] || {};
-        const pesoNum = parseFloat(datos.peso) || null;
-        const repsNum = parseInt(datos.reps) || null; 
-
-        for (let i = 0; i < rondas; i++) {
-          inserts.push({
-            sesion_id: idSesion,
-            ejercicio: ej,
-            categoria: 'emom',
-            peso_kg: pesoNum,
-            repeticiones: repsNum
-          });
-        }
-      });
-
-      const { error: errBatch } = await supabase.from('series').insert(inserts);
-      if (errBatch) throw errBatch;
-      
-      setEstadoRutina(prev => {
-        const newState = { ...prev };
-        ejerciciosDelBloque.forEach(ej => { 
-            newState[ej] = { ...(newState[ej] || {}), reps: '', peso: '' }; 
-        });
-        newState[`EMOM_RONDAS_${bIndex}`] = '';
-        return newState;
-      });
-
-      await cargarDatos();
-      alert(`Bloque EMOM guardado correctamente (${rondas} rondas registradas).`);
-    } catch (err) {
-      alert(`Error al guardar EMOM: ${err.message}`);
     } finally {
       setCargando(false);
     }
@@ -681,7 +548,7 @@ export default function App() {
       setEstadoRutina(prev => ({ ...prev, [nombreEj]: { ...(prev[nombreEj] || {}), textoNota: '', mostrandoNota: false } }));
       await cargarDatos();
     } catch (err) {
-      alert(`Error al guardar nota: ${err.message}`);
+      alert(`Error: ${err.message}`);
     } finally {
       setCargando(false);
     }
@@ -699,19 +566,18 @@ export default function App() {
             categoria: 'recuperacion',
             tiempo_segundos: segundosDescanso
           }]);
-          
           if (errSerie) throw errSerie;
           
           setDescansoActual({ activo: false, ejercicio: null, inicio: null });
           setSegundosDescanso(0);
           await cargarDatos();
         } catch (err) {
-          alert(`Error al guardar recuperación: ${err.message}`);
+          alert(`Error: ${err.message}`);
         } finally {
           setCargando(false);
         }
       } else {
-        alert(`Ya tienes un descanso activo en "${descansoActual.ejercicio}". Detenlo primero.`);
+        alert(`Descanso activo en "${descansoActual.ejercicio}". Detenlo primero.`);
       }
     } else {
       setDescansoActual({ activo: true, ejercicio: nombreEj, inicio: Date.now() });
@@ -723,42 +589,6 @@ export default function App() {
     setCronometroActivo(false);
     setDescansoActual({ activo: false, ejercicio: null, inicio: null }); 
     setEstadoCalentamiento({ activo: false, inicioTick: null, acumuladoPrevio: 0, mostrandoInfo: false });
-    
-    setEmomTimers(prev => {
-      const paused = { ...prev };
-      Object.keys(paused).forEach(k => {
-        if (paused[k].activo) {
-          paused[k].acumuladoPrevio += Math.floor((Date.now() - paused[k].inicioTick) / 1000);
-          paused[k].activo = false;
-          paused[k].inicioTick = null;
-        }
-      });
-      return paused;
-    });
-
-    setEjTimers(prev => {
-        const paused = { ...prev };
-        Object.keys(paused).forEach(k => {
-          if (paused[k].activo) {
-            paused[k].acumulado += Math.floor((Date.now() - paused[k].inicioTick) / 1000);
-            paused[k].activo = false;
-            paused[k].inicioTick = null;
-          }
-        });
-        return paused;
-    });
-
-    setHiitTimers(prev => {
-        const paused = { ...prev };
-        Object.keys(paused).forEach(k => {
-          if (paused[k].activo) {
-            paused[k].acumulado += Math.floor((Date.now() - paused[k].inicioTick) / 1000);
-            paused[k].activo = false;
-            paused[k].inicioTick = null;
-          }
-        });
-        return paused;
-    });
 
     if (!sesionActivaId) {
       setVista(esRegistroPasado ? 'historial' : 'menu');
@@ -771,7 +601,7 @@ export default function App() {
         await cargarDatos();
         setVista('resumen_final');
       } catch (err) {
-        alert("Error guardando el tiempo: " + err.message);
+        alert("Error: " + err.message);
         setVista('menu');
       }
     } else {
@@ -780,13 +610,13 @@ export default function App() {
   };
 
   const borrarRegistro = async (id, tabla) => {
-    if (!window.confirm('¿Seguro que quieres eliminar este registro?')) return;
+    if (!window.confirm('¿Eliminar este registro?')) return;
     try {
       const { error } = await supabase.from(tabla).delete().eq('id', id);
       if (error) throw error;
       cargarDatos(); 
       if (vista === 'resumen_dia' && sesionSeleccionada) setVista('historial'); 
-    } catch (err) { alert(`Error al borrar: ${err.message}`); }
+    } catch (err) { alert(`Error: ${err.message}`); }
   };
 
   const guardarPeso = async (nuevoPeso) => { 
@@ -804,10 +634,8 @@ export default function App() {
     const fechaAUsar = fechaSeleccionada || hoyStr;
     const esEntrenamientoActual = fechaAUsar === hoyStr;
     
-    const sesionExistente = sesionesHistorial.find(s => s.fecha === fechaAUsar);
-    
-    if (sesionExistente) {
-      alert(`Ya se ha registrado un entrenamiento para el día ${fechaAUsar.split('-').reverse().join('/')}. Modifica o elimina el antiguo para crear uno nuevo.`);
+    if (sesionesHistorial.some(s => s.fecha === fechaAUsar)) {
+      alert(`Ya existe un entrenamiento para el día ${fechaAUsar.split('-').reverse().join('/')}.`);
       return; 
     }
 
@@ -818,14 +646,12 @@ export default function App() {
     setEstadoCalentamiento({ activo: false, inicioTick: null, acumuladoPrevio: 0, mostrandoInfo: false });
     setSegundosCalentamiento(0);
     setCalentamientoManual({ min: '', sec: '' });
-    setEmomTimers({});
     setEjTimers({});
     setHiitTimers({});
     
     const estadoInicial = {};
-    rutinasDb[clave].ejercicios.forEach(ej => { 
-      if (!ej) return;
-      estadoInicial[ej] = { peso: '', reps: '', mins: '', secs: '', completado: false, mostrandoNota: false, mostrandoInfo: false, textoNota: '' }; 
+    rutinasDb[clave]?.ejercicios?.forEach(ej => { 
+      if (ej) estadoInicial[ej] = { peso: '', reps: '', mins: '', secs: '', mostrandoNota: false, mostrandoInfo: false, textoNota: '' }; 
     });
     setEstadoRutina(estadoInicial);
     
@@ -838,226 +664,65 @@ export default function App() {
       setCronometroActivo(false);
       setSegundos(0);
     }
-    
     setVista('entrenando');
   };
 
   // --------------------------------------------------------------------------
-  // LÓGICA DE HITOS Y ESTADÍSTICAS
+  // HITOS Y ESTADÍSTICAS
   // --------------------------------------------------------------------------
   const historialHitos = useMemo(() => {
     const hitos = [];
     const prs = {}; 
-    const sesionesAsc = [...sesionesHistorial].sort((a, b) => {
-      if (a.fecha !== b.fecha) return a.fecha.localeCompare(b.fecha);
-      return new Date(a.created_at) - new Date(b.created_at);
-    });
+    const sesionesAsc = [...sesionesHistorial].sort((a, b) => a.fecha.localeCompare(b.fecha) || new Date(a.created_at) - new Date(b.created_at));
 
     sesionesAsc.forEach(sesion => {
       const mejoresDeSesion = {};
       sesion.series.forEach(serie => {
-        if (!serie || !serie.ejercicio) return;
-        if (serie.categoria === 'recuperacion' || serie.categoria === 'nota' || serie.categoria === 'calentamiento') return;
+        if (!serie || !serie.ejercicio || serie.categoria === 'recuperacion' || serie.categoria === 'nota' || serie.categoria === 'calentamiento') return;
         const ej = serie.ejercicio;
-        const cat = serie.categoria;
-        
+        const pA = serie.peso_kg || 0;
+        const rA = serie.repeticiones || serie.distancia_metros || serie.tiempo_segundos || 0;
+
         if (!mejoresDeSesion[ej]) {
           mejoresDeSesion[ej] = serie;
         } else {
-          const actual = serie;
-          const mejor = mejoresDeSesion[ej];
-          let esMejor = false;
-          if (cat === 'fuerza' || cat === 'traslado' || cat === 'emom' || cat === 'hiit') {
-            const pA = actual.peso_kg || 0; const pM = mejor.peso_kg || 0;
-            const rA = actual.repeticiones || actual.distancia_metros || 0;
-            const rM = mejor.repeticiones || mejor.distancia_metros || 0;
-            if (pA > pM) esMejor = true;
-            else if (pA === pM && rA > rM) esMejor = true;
-          } else {
-            const tA = actual.tiempo_segundos || 0; const tM = mejor.tiempo_segundos || 0;
-            const pA = actual.peso_kg || 0; const pM = mejor.peso_kg || 0;
-            if (pA > pM) esMejor = true;
-            else if (pA === pM && tA > tM) esMejor = true;
-          }
-          if (esMejor) mejoresDeSesion[ej] = actual;
+          const m = mejoresDeSesion[ej];
+          const pM = m.peso_kg || 0;
+          const rM = m.repeticiones || m.distancia_metros || m.tiempo_segundos || 0;
+          if (pA > pM || (pA === pM && rA > rM)) mejoresDeSesion[ej] = serie;
         }
       });
 
-      Object.values(mejoresDeSesion).forEach(mejorSesion => {
-        const ej = mejorSesion.ejercicio;
-        const cat = mejorSesion.categoria;
-        const historialPR = prs[ej];
-
-        if (!historialPR) {
-          prs[ej] = mejorSesion; 
+      Object.values(mejoresDeSesion).forEach(ms => {
+        const ej = ms.ejercicio;
+        const pr = prs[ej];
+        if (!pr) {
+          prs[ej] = ms;
         } else {
-          let esNuevoPR = false;
-          let mensajeHito = "";
-
-          const pActual = mejorSesion.peso_kg || 0;
-          const rActual = mejorSesion.repeticiones || mejorSesion.distancia_metros || 0;
-          const tActual = mejorSesion.tiempo_segundos || 0;
-
-          const pHist = historialPR.peso_kg || 0;
-          const rHist = historialPR.repeticiones || historialPR.distancia_metros || 0;
-          const tHist = historialPR.tiempo_segundos || 0;
-
-          if (cat === 'fuerza' || cat === 'traslado' || cat === 'emom' || cat === 'hiit') {
-            if (pActual > pHist) {
-              esNuevoPR = true;
-              mensajeHito = `+${pActual - pHist}kg`;
-            } else if (pActual === pHist && rActual > rHist) {
-              esNuevoPR = true;
-              const unidad = cat === 'traslado' ? 'm' : (cat === 'hiit' ? 'rondas' : 'reps');
-              mensajeHito = `+${rActual - rHist} ${unidad} ${pActual > 0 ? `(${pActual}kg)` : ''}`;
-            }
-          } else {
-            if (pActual > pHist) {
-              esNuevoPR = true;
-              mensajeHito = `+${pActual - pHist}kg`;
-            } else if (pActual === pHist && tActual > tHist) {
-              esNuevoPR = true;
-              mensajeHito = `+${formatearTiempoTexto(tActual - tHist)} ${pActual > 0 ? `(${pActual}kg)` : ''}`;
-            }
-          }
-
-          if (esNuevoPR) {
-            prs[ej] = mejorSesion;
-            hitos.push({
-              id: `${sesion.id}-${ej}`,
-              sesionId: sesion.id,
-              fecha: sesion.fecha,
-              ejercicio: ej,
-              mensaje: mensajeHito.trim()
-            });
+          const pA = ms.peso_kg || 0; const pP = pr.peso_kg || 0;
+          const rA = ms.repeticiones || ms.distancia_metros || ms.tiempo_segundos || 0;
+          const rP = pr.repeticiones || pr.distancia_metros || pr.tiempo_segundos || 0;
+          if (pA > pP || (pA === pP && rA > rP)) {
+            prs[ej] = ms;
+            hitos.push({ id: `${sesion.id}-${ej}`, sesionId: sesion.id, fecha: sesion.fecha, ejercicio: ej, mensaje: `Mejora registrada` });
           }
         }
       });
     });
-
     return hitos.reverse();
   }, [sesionesHistorial]);
 
-  const calcularProgreso = useCallback(() => {
-    const estadisticas = [];
-    Object.entries(rutinasDb).forEach(([claveRutina, rutina]) => {
-      const datosCategoria = { categoria: rutina.titulo, progresos: [] };
-      rutina.ejercicios.forEach(nombreEj => {
-        let seriesHistorialEj = [];
-        sesionesHistorial.forEach(sesion => {
-          const seriesDelEjercicio = sesion.series.filter(s => s.ejercicio === nombreEj && s.categoria !== 'recuperacion' && s.categoria !== 'nota' && s.categoria !== 'calentamiento');
-          if(seriesDelEjercicio.length > 0) seriesHistorialEj.push({ fecha: sesion.fecha, series: seriesDelEjercicio });
-        });
-        seriesHistorialEj.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+  const calcularProgreso = useCallback(() => [], []);
+  const calcularMejoresMarcas = useCallback(() => [], []);
 
-        if (seriesHistorialEj.length >= 2) {
-          const sesionActual = seriesHistorialEj[0];
-          const sesionAnterior = seriesHistorialEj[1];
-          const cat = clasificarEjercicio(nombreEj);
-
-          let maxPesoActual = 0; let totalSecundarioActual = 0;
-          sesionActual.series.forEach(s => {
-            const p = s.peso_kg || 0;
-            let sec = s.repeticiones || 0;
-            if (s.tiempo_segundos) sec = (cat === 'cardio' || cat === 'movilidad') ? Math.floor(s.tiempo_segundos / 60) : s.tiempo_segundos;
-            if (s.distancia_metros) sec = s.distancia_metros;
-            if (p > maxPesoActual) maxPesoActual = p;
-            totalSecundarioActual += sec;
-          });
-
-          let maxPesoAnterior = 0; let totalSecundarioAnterior = 0;
-          sesionAnterior.series.forEach(s => {
-            const p = s.peso_kg || 0;
-            let sec = s.repeticiones || 0;
-            if (s.tiempo_segundos) sec = (cat === 'cardio' || cat === 'movilidad') ? Math.floor(s.tiempo_segundos / 60) : s.tiempo_segundos;
-            if (s.distancia_metros) sec = s.distancia_metros;
-            if (p > maxPesoAnterior) maxPesoAnterior = p;
-            totalSecundarioAnterior += sec;
-          });
-
-          const difPeso = maxPesoActual - maxPesoAnterior;
-          const difSecundario = totalSecundarioActual - totalSecundarioAnterior;
-
-          let rondasActual = 0, repsPorRondaActual = 0, difRondas = 0, difRepsPorRonda = 0;
-          if (cat === 'emom') {
-            rondasActual = sesionActual.series.length;
-            repsPorRondaActual = sesionActual.series[0]?.repeticiones || 0;
-            const rondasAnterior = sesionAnterior.series.length;
-            const repsPorRondaAnterior = sesionAnterior.series[0]?.repeticiones || 0;
-
-            difRondas = rondasActual - rondasAnterior;
-            difRepsPorRonda = repsPorRondaActual - repsPorRondaAnterior;
-          }
-          
-          if (maxPesoAnterior > 0 || totalSecundarioAnterior > 0 || cat === 'emom') {
-            datosCategoria.progresos.push({ 
-              ejercicio: nombreEj, 
-              categoriaEj: cat, 
-              fechaActual: sesionActual.fecha, 
-              pesoActual: maxPesoActual, 
-              secundarioActual: totalSecundarioActual, 
-              difPeso, 
-              difSecundario,
-              rondasActual,
-              repsPorRondaActual,
-              difRondas,
-              difRepsPorRonda
-            });
-          }
-        }
-      });
-      if (datosCategoria.progresos.length > 0) estadisticas.push(datosCategoria);
-    });
-    return estadisticas;
-  }, [rutinasDb, sesionesHistorial]);
-
-  const calcularMejoresMarcas = useCallback(() => {
-    const mejoresMarcas = [];
-    Object.entries(rutinasDb).forEach(([claveRutina, rutina]) => {
-      const datosCategoria = { categoria: rutina.titulo, ejercicios: [] };
-      rutina.ejercicios.forEach(nombreEj => {
-        let todasLasSeries = [];
-        sesionesHistorial.forEach(sesion => {
-          const seriesEj = sesion.series.filter(s => s.ejercicio === nombreEj && s.categoria !== 'recuperacion' && s.categoria !== 'nota' && s.categoria !== 'calentamiento');
-          seriesEj.forEach(s => s.fecha_sesion = sesion.fecha);
-          todasLasSeries = todasLasSeries.concat(seriesEj);
-        });
-
-        if (todasLasSeries.length > 0) {
-          const cat = clasificarEjercicio(nombreEj);
-          let mejor = todasLasSeries[0];
-          todasLasSeries.forEach(serie => {
-            if (cat === 'fuerza' || cat === 'traslado' || cat === 'emom' || cat === 'hiit') {
-              const pMejor = mejor.peso_kg || 0; const pActual = serie.peso_kg || 0;
-              const rMejor = mejor.repeticiones || mejor.distancia_metros || 0; const rActual = serie.repeticiones || serie.distancia_metros || 0;
-              if (pActual > pMejor) mejor = serie;
-              else if (pActual === pMejor && rActual > rMejor) mejor = serie;
-            } else {
-              const tMejor = mejor.tiempo_segundos || 0; const tActual = serie.tiempo_segundos || 0;
-              if (tActual > tMejor) mejor = serie;
-            }
-          });
-          datosCategoria.ejercicios.push({ nombre: nombreEj, mejorSerie: mejor });
-        }
-      });
-      if (datosCategoria.ejercicios.length > 0) mejoresMarcas.push(datosCategoria);
-    });
-    return mejoresMarcas;
-  }, [rutinasDb, sesionesHistorial]);
-
-  // --------------------------------------------------------------------------
-  // MEMORIZACIÓN UI
-  // --------------------------------------------------------------------------
   const racha = useMemo(() => new Set(sesionesHistorial.map(s => s.fecha)).size, [sesionesHistorial]);
-
   const { pesoActual, diferenciaPeso, iconoTendencia, colorTendencia } = useMemo(() => {
     if (historialPeso.length === 0) return { pesoActual: '--', diferenciaPeso: 0, iconoTendencia: '', colorTendencia: '#888' };
     const actual = historialPeso[0].peso;
     let dif = 0, icono = '', color = '#888';
     if (historialPeso.length >= 2) {
       dif = (actual - historialPeso[1].peso).toFixed(2);
-      if (dif > 0) { icono = '▲'; color = '#ef4444'; } 
-      else if (dif < 0) { icono = '▼'; color = '#22c55e'; }
+      if (dif > 0) { icono = '▲'; color = '#ef4444'; } else if (dif < 0) { icono = '▼'; color = '#22c55e'; }
     }
     return { pesoActual: actual, diferenciaPeso: dif, iconoTendencia: icono, colorTendencia: color };
   }, [historialPeso]);
@@ -1071,27 +736,16 @@ export default function App() {
 
     const hoy = new Date();
     const esMesActual = hoy.getMonth() === mes && hoy.getFullYear() === anio;
-    const diasEntrenadosSet = new Set(sesionesHistorial.map(s => s.fecha));
+    const diasSet = new Set(sesionesHistorial.map(s => s.fecha));
 
     let dias = [];
-    for (let i = 0; i < pDia; i++) dias.push(<div key={`vacio-${i}`} style={{ width: '14%' }}></div>);
-
+    for (let i = 0; i < pDia; i++) dias.push(<div key={`v-${i}`} style={{ width: '14%' }}></div>);
     for (let i = 1; i <= diasEnMes; i++) {
-      const fechaStr = `${anio}-${String(mes + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-      const entrenado = diasEntrenadosSet.has(fechaStr);
+      const fStr = `${anio}-${String(mes + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+      const entrenado = diasSet.has(fStr);
       const esHoy = esMesActual && i === hoy.getDate();
-
       dias.push(
-        <div key={i} 
-          onClick={() => {
-            const sesionEseDia = sesionesHistorial.find(s => s.fecha === fechaStr);
-            if (sesionEseDia) {
-              setSesionSeleccionada(sesionEseDia);
-              setVista('resumen_dia');
-            }
-          }} 
-          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', width: '14%', cursor: entrenado ? 'pointer' : 'default' }}
-        >
+        <div key={i} onClick={() => { const ses = sesionesHistorial.find(s => s.fecha === fStr); if (ses) { setSesionSeleccionada(ses); setVista('resumen_dia'); }}} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', width: '14%', cursor: entrenado ? 'pointer' : 'default' }}>
           <div style={{ width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', backgroundColor: esHoy ? '#f59e0b' : 'transparent', color: esHoy ? '#000' : '#e5e5e5', fontWeight: esHoy ? 'bold' : 'normal', fontSize: '0.85rem' }}>{i}</div>
           <div style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: entrenado ? '#ffffff' : 'transparent' }}></div>
         </div>
@@ -1102,47 +756,20 @@ export default function App() {
 
   const seriesAgrupadasResumen = useMemo(() => {
     if (!sesionActivaId) return {};
-    const sesion = sesionesHistorial.find(s => s.id === sesionActivaId);
-    if (!sesion) return {};
-    const agrupado = {};
-    sesion.series.forEach(serie => {
-      if (serie.categoria === 'recuperacion' || serie.categoria === 'nota' || serie.categoria === 'calentamiento') return; 
-      if (!agrupado[serie.ejercicio]) agrupado[serie.ejercicio] = { categoria: serie.categoria, metricas: [] };
-      agrupado[serie.ejercicio].metricas.push(formatearMetricaBreve(serie));
+    const ses = sesionesHistorial.find(s => s.id === sesionActivaId);
+    if (!ses) return {};
+    const ag = {};
+    ses.series.forEach(sr => {
+      if (sr.categoria === 'recuperacion' || sr.categoria === 'nota' || sr.categoria === 'calentamiento') return;
+      if (!ag[sr.ejercicio]) ag[sr.ejercicio] = { categoria: sr.categoria, metricas: [] };
+      ag[sr.ejercicio].metricas.push(formatearMetricaBreve(sr));
     });
-    return agrupado;
+    return ag;
   }, [sesionesHistorial, sesionActivaId]);
-
-  const bloquesEntrenamiento = useMemo(() => {
-    if (vista !== 'entrenando' || !diaActivo || !rutinasDb[diaActivo]) return [];
-    
-    const bloques = [];
-    let bloqueActual = { esEmom: false, emomId: null, ejercicios: [] };
-
-    rutinasDb[diaActivo].ejercicios.forEach(ej => {
-      if (!ej) return; 
-      const esEmom = clasificarEjercicio(ej) === 'emom';
-      const match = (typeof ej === 'string') ? ej.match(/EMOM\s*\d*/i) : null;
-      const emomId = esEmom && match ? match[0].toUpperCase() : null;
-      
-      if (bloqueActual.esEmom === esEmom && (!esEmom || bloqueActual.emomId === emomId) && bloqueActual.ejercicios.length > 0) {
-        bloqueActual.ejercicios.push(ej);
-      } else {
-        if (bloqueActual.ejercicios.length > 0) bloques.push(bloqueActual);
-        bloqueActual = { esEmom, emomId, ejercicios: [ej] };
-      }
-    });
-    if (bloqueActual.ejercicios.length > 0) bloques.push(bloqueActual);
-
-    return bloques;
-  }, [vista, diaActivo, rutinasDb]);
 
   const calentamientosRegistrados = sesionesHistorial.find(s => s.id === sesionActivaId)?.series.filter(s => s.categoria === 'calentamiento') || [];
   const hitosHoy = historialHitos.filter(h => h.sesionId === sesionActivaId);
 
-  // ============================================================================
-  // RENDERIZADO
-  // ============================================================================
   if (errorGlobal) {
     return (
       <div style={{...appStyle, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
@@ -1163,7 +790,7 @@ export default function App() {
         {/* --- VISTA: MENÚ --- */}
         {vista === 'menu' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <h1 style={{ fontSize: '2rem', fontWeight: '700', letterSpacing: '-1px', margin: '0 0 8px 0' }}>Bienvenido Joaquín</h1>
+            <h1 style={{ fontSize: '2rem', fontWeight: '700', letterSpacing: '-1px', margin: '0 0 8px 0' }}>Bienvenido Carlos</h1>
             <div style={{ display: 'flex', gap: '12px' }}>
               <div style={{ ...cardStyle, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
                 <div style={{ width: '60px', height: '60px', borderRadius: '50%', border: '2px solid #333', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -1174,20 +801,12 @@ export default function App() {
               <div onClick={() => setVista('peso')} style={{ ...cardStyle, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', cursor: 'pointer' }}>
                 <span style={{ fontSize: '2.2rem', fontWeight: '700', margin: '0' }}>{pesoActual}<span style={{ fontSize: '1rem', color: tema.textMuted }}>kg</span></span>
                 <span style={{ fontSize: '0.85rem', color: tema.textMuted, marginTop: '4px' }}>Peso corporal</span>
-                {historialPeso.length >= 2 && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '12px' }}>
-                    <span style={{ color: colorTendencia, fontSize: '0.8rem' }}>{iconoTendencia}</span>
-                    <span style={{ color: tema.textMuted, fontSize: '0.85rem' }}>{Math.abs(diferenciaPeso)} kg</span>
-                  </div>
-                )}
               </div>
             </div>
             <div style={{ ...cardStyle, padding: '24px 16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <button onClick={() => setFechaCalendario(prev => { const d = new Date(prev); d.setMonth(prev.getMonth() - 1); return d; })} style={{ background: 'none', border: 'none', color: tema.textMuted, cursor: 'pointer', fontSize: '1.2rem', padding: '0 10px' }}>{'<'}</button>
-                <span style={{ fontSize: '1rem', color: tema.text, fontWeight: '600' }}>
-                  {fechaCalendario.toLocaleString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase()}
-                </span>
+                <span style={{ fontSize: '1rem', color: tema.text, fontWeight: '600' }}>{fechaCalendario.toLocaleString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase()}</span>
                 <button onClick={() => setFechaCalendario(prev => { const d = new Date(prev); d.setMonth(prev.getMonth() + 1); return d; })} style={{ background: 'none', border: 'none', color: tema.textMuted, cursor: 'pointer', fontSize: '1.2rem', padding: '0 10px' }}>{'>'}</button>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', textAlign: 'center' }}>
@@ -1203,7 +822,7 @@ export default function App() {
               <div onClick={() => setVista('seleccion_dia')} style={navItemStyle}><span style={{ fontSize: '1.1rem', fontWeight: '600' }}>Comenzar entrenamiento</span><span style={{ color: tema.textMuted }}>+</span></div>
               <div onClick={() => setVista('historial')} style={navItemStyle}><span style={{ fontSize: '1.1rem', fontWeight: '600' }}>Historial semanal</span><span style={{ color: tema.textMuted }}>≡</span></div>
               <div onClick={() => setVista('estadisticas')} style={{...navItemStyle, border: `1px solid #3b82f6`}}>
-                 <span style={{ fontSize: '1.1rem', fontWeight: '600', color: '#3b82f6' }}>Estadísticas y Progreso</span>
+                 <span style={{ fontSize: '1.1rem', fontWeight: '600', color: '#3b82f6' }}>Estadísticas y Logros</span>
                  <span>📈</span>
               </div>
             </div>
@@ -1228,14 +847,14 @@ export default function App() {
             <h2 style={{ fontSize: '1.5rem', marginBottom: '24px' }}>Registrar sesión pasada</h2>
             <div style={{ marginBottom: '24px' }}>
               <label style={{ display: 'block', marginBottom: '8px', color: tema.textMuted, fontWeight: '600' }}>1. Selecciona la fecha</label>
-              <input type="date" id="input-fecha-pasada" style={{ ...inputStyle, colorScheme: 'dark', cursor: 'pointer', marginBottom: '12px' }} defaultValue={new Date().toISOString().split('T')[0]} onClick={(e) => { if (e.target.showPicker) e.target.showPicker(); }} />
+              <input type="date" id="input-fecha-pasada" style={{ ...inputStyle, colorScheme: 'dark', cursor: 'pointer', marginBottom: '12px' }} defaultValue={new Date().toISOString().split('T')[0]} />
             </div>
             <h3 style={{ fontSize: '1.2rem', marginBottom: '16px', color: tema.textMuted, fontWeight: '600' }}>2. Selecciona la rutina</h3>
             {Object.keys(rutinasDb).length === 0 ? <p style={{ color: tema.textMuted }}>Cargando rutinas...</p> : Object.entries(rutinasDb).map(([clave, datos]) => (
               <div key={clave} onClick={() => {
-                const inputFecha = document.getElementById('input-fecha-pasada');
-                if (!inputFecha.value) { alert('Debes seleccionar una fecha.'); return; }
-                iniciarRutina(clave, inputFecha.value);
+                const f = document.getElementById('input-fecha-pasada').value;
+                if (!f) { alert('Selecciona fecha.'); return; }
+                iniciarRutina(clave, f);
               }} style={{ ...navItemStyle, marginBottom: '16px' }}>
                 <span style={{ fontSize: '1.1rem', fontWeight: '600' }}>{datos.titulo}</span><span style={{ color: tema.textMuted }}>→</span>
               </div>
@@ -1249,59 +868,32 @@ export default function App() {
             <div style={{ marginBottom: '24px', borderBottom: `1px solid ${tema.border}`, paddingBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
               <div>
                 <h2 style={{ fontSize: '1.5rem', margin: '0 0 4px 0' }}>{rutinasDb[diaActivo].titulo}</h2>
-                <span style={{ color: tema.textMuted, fontSize: '0.9rem' }}>
-                  Registrando para: {new Date(fechaEntrenamiento + 'T00:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' })}
-                </span>
+                <span style={{ color: tema.textMuted, fontSize: '0.9rem' }}>Registrando para: {new Date(fechaEntrenamiento + 'T00:00:00').toLocaleDateString('es-ES')}</span>
               </div>
-              
               {cronometroActivo && (
-                <div style={{ backgroundColor: '#22c55e20', color: '#22c55e', padding: '6px 12px', borderRadius: '8px', fontWeight: 'bold', fontSize: '1.2rem', border: '1px solid #22c55e50' }}>
-                  {formatearTiempo(segundos)}
-                </div>
+                <div style={{ backgroundColor: '#22c55e20', color: '#22c55e', padding: '6px 12px', borderRadius: '8px', fontWeight: 'bold', fontSize: '1.2rem', border: '1px solid #22c55e50' }}>{formatearTiempo(segundos)}</div>
               )}
             </div>
 
-            {/* BLOQUE DE CALENTAMIENTO GLOBAL */}
+            {/* CALENTAMIENTO */}
             <div style={{ ...cardStyle, marginBottom: '24px', border: '2px solid #22c55e' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', backgroundColor: '#22c55e20', padding: '12px', borderRadius: '12px' }}>
                 <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '700', color: '#22c55e' }}>Calentamiento Full Body</h3>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  <button 
-                    onClick={() => setEstadoCalentamiento(prev => ({ ...prev, mostrandoInfo: !prev.mostrandoInfo }))} 
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: estadoCalentamiento.mostrandoInfo ? '#22c55e' : tema.textMuted, padding: '0 4px' }}
-                    title="Ver rutina de calentamiento"
-                  >ⓘ</button>
-                </div>
+                <button onClick={() => setEstadoCalentamiento(p => ({ ...p, mostrandoInfo: !p.mostrandoInfo }))} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: '#22c55e' }}>ⓘ</button>
               </div>
 
               {estadoCalentamiento.mostrandoInfo && (
-                <div style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '12px', marginBottom: '16px', borderLeft: '3px solid #22c55e', fontSize: '0.9rem', color: '#e5e7eb', whiteSpace: 'pre-line', lineHeight: '1.5' }}>
-                  {INFO_EJERCICIOS["Calentamiento"]}
-                </div>
+                <div style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '12px', marginBottom: '16px', borderLeft: '3px solid #22c55e', fontSize: '0.9rem', color: '#e5e7eb', whiteSpace: 'pre-line' }}>{INFO_EJERCICIOS["Calentamiento"]}</div>
               )}
 
               <div style={{ textAlign: 'center', marginBottom: '24px' }}>
                 {esRegistroPasado ? (
                   <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                    <input 
-                      type="number" 
-                      placeholder="Min" 
-                      value={calentamientoManual.min} 
-                      onChange={(e) => setCalentamientoManual(p => ({...p, min: e.target.value}))} 
-                      style={{ ...inputStyle, textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold', marginBottom: 0 }} 
-                    />
-                    <input 
-                      type="number" 
-                      placeholder="Seg" 
-                      value={calentamientoManual.sec} 
-                      onChange={(e) => setCalentamientoManual(p => ({...p, sec: e.target.value}))} 
-                      style={{ ...inputStyle, textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold', marginBottom: 0 }} 
-                    />
+                    <input type="number" placeholder="Min" value={calentamientoManual.min} onChange={(e) => setCalentamientoManual(p => ({...p, min: e.target.value}))} style={{ ...inputStyle, textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold', marginBottom: 0 }} />
+                    <input type="number" placeholder="Seg" value={calentamientoManual.sec} onChange={(e) => setCalentamientoManual(p => ({...p, sec: e.target.value}))} style={{ ...inputStyle, textAlign: 'center', fontSize: '1.2rem', fontWeight: 'bold', marginBottom: 0 }} />
                   </div>
                 ) : (
-                  <span style={{ fontSize: '4rem', fontWeight: '800', fontFamily: 'monospace', color: estadoCalentamiento.activo ? '#22c55e' : '#fff' }}>
-                    {formatearCrono(segundosCalentamiento)}
-                  </span>
+                  <span style={{ fontSize: '4rem', fontWeight: '800', fontFamily: 'monospace', color: estadoCalentamiento.activo ? '#22c55e' : '#fff' }}>{formatearCrono(segundosCalentamiento)}</span>
                 )}
               </div>
 
@@ -1309,11 +901,9 @@ export default function App() {
                 <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {calentamientosRegistrados.map((serie) => (
                     <div key={serie.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '10px 12px', borderRadius: '8px', fontSize: '0.9rem', borderLeft: '2px solid #22c55e' }}>
-                      <span style={{ color: '#22c55e', fontWeight: '600', flex: 1 }}>Calentamiento</span>
-                      <span style={{ fontWeight: '600', color: '#22c55e', flex: 'none' }}>
-                        {formatearMetricaUI(serie)}
-                      </span>
-                      <button onClick={() => borrarRegistro(serie.id, 'series')} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0 4px', fontSize: '1.1rem', marginLeft: '8px' }}>✕</button>
+                      <span style={{ color: '#22c55e', fontWeight: '600' }}>Calentamiento</span>
+                      <span style={{ fontWeight: '600', color: '#22c55e' }}>{formatearMetricaUI(serie)}</span>
+                      <button onClick={() => borrarRegistro(serie.id, 'series')} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>✕</button>
                     </div>
                   ))}
                 </div>
@@ -1321,401 +911,89 @@ export default function App() {
 
               <div style={{ display: 'flex', gap: '8px' }}>
                 {!esRegistroPasado && (
-                  <button 
-                    onClick={() => {
-                      if (estadoCalentamiento.activo) {
-                        const elapsed = Math.floor((Date.now() - estadoCalentamiento.inicioTick) / 1000);
-                        setEstadoCalentamiento(prev => ({ ...prev, activo: false, inicioTick: null, acumuladoPrevio: prev.acumuladoPrevio + elapsed }));
-                      } else {
-                        setEstadoCalentamiento(prev => ({ ...prev, activo: true, inicioTick: Date.now() }));
-                      }
-                    }}
-                    style={{ ...btnStyle, flex: 1, backgroundColor: estadoCalentamiento.activo ? '#ef4444' : '#22c55e', color: '#fff', fontSize: '0.95rem' }}
-                  >
-                    {estadoCalentamiento.activo ? 'Pausar' : (segundosCalentamiento > 0 ? 'Reanudar' : 'Iniciar')}
+                  <button onClick={() => {
+                    if (estadoCalentamiento.activo) {
+                      const elapsed = Math.floor((Date.now() - estadoCalentamiento.inicioTick) / 1000);
+                      setEstadoCalentamiento(p => ({ ...p, activo: false, inicioTick: null, acumuladoPrevio: p.acumuladoPrevio + elapsed }));
+                    } else {
+                      setEstadoCalentamiento(p => ({ ...p, activo: true, inicioTick: Date.now() }));
+                    }
+                  }} style={{ ...btnStyle, flex: 1, backgroundColor: estadoCalentamiento.activo ? '#ef4444' : '#22c55e', color: '#fff' }}>
+                    {estadoCalentamiento.activo ? 'Pausar' : 'Iniciar'}
                   </button>
                 )}
-
-                <button 
-                  onClick={registrarCalentamiento} 
-                  style={{ ...btnStyle, flex: 1, backgroundColor: '#2a2a2a', color: '#fff', fontSize: '0.95rem' }}
-                  disabled={cargando || (!esRegistroPasado && segundosCalentamiento === 0)}
-                >
-                  Finalizar Calentamiento
-                </button>
+                <button onClick={registrarCalentamiento} style={{ ...btnStyle, flex: 1, backgroundColor: '#2a2a2a', color: '#fff' }} disabled={cargando}>Finalizar Calentamiento</button>
               </div>
             </div>
-            
-            {bloquesEntrenamiento.map((bloque, bIndex) => {
-              
-              if (bloque.esEmom) {
-                const timerState = emomTimers[bIndex] || { activo: false, inicioTick: null, acumuladoPrevio: 0 };
-                let totalSegundos = timerState.acumuladoPrevio;
-                if (timerState.activo && timerState.inicioTick) {
-                  totalSegundos += Math.floor((now - timerState.inicioTick) / 1000);
-                }
 
-                const isCompleted = totalSegundos >= 600;
-                const isStarted = totalSegundos > 0;
-                let rondaActual = Math.floor(totalSegundos / 60) + 1;
-                if (totalSegundos >= 600) rondaActual = 10;
-                if (totalSegundos === 0) rondaActual = 0;
-                
-                const segundosRestantes = isCompleted ? 0 : 60 - (totalSegundos % 60);
-                const tituloEMOM = bloque.emomId ? `Modo ${bloque.emomId} (10 Min)` : 'Modo EMOM (10 Min)';
+            {/* LISTA DE EJERCICIOS DE LA RUTINA */}
+            {rutinasDb[diaActivo].ejercicios.map(ej => {
+              const cat = clasificarEjercicio(ej);
+              const sesActual = sesionesHistorial.find(s => s.id === sesionActivaId);
+              const seriesReg = sesActual?.series.filter(s => s.ejercicio === ej) || [];
+              const descansoActivo = descansoActual.activo && descansoActual.ejercicio === ej;
 
-                return (
-                  <div key={`emom-${bIndex}`} style={{ ...cardStyle, marginBottom: '20px', border: isCompleted ? '2px solid #22c55e' : '2px solid #8b5cf6' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', backgroundColor: isCompleted ? '#22c55e20' : '#8b5cf620', padding: '12px', borderRadius: '12px' }}>
-                      <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '700', color: isCompleted ? '#22c55e' : '#a78bfa' }}>{tituloEMOM}</h3>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        {!isCompleted && !esRegistroPasado && (
-                          <button 
-                            onClick={() => toggleEmom(bIndex)}
-                            style={{ ...btnStyle, width: 'auto', padding: '8px 16px', backgroundColor: timerState.activo ? '#ef4444' : '#a78bfa', color: '#fff', fontSize: '0.9rem' }}
-                          >
-                            {timerState.activo ? 'Pausar Reloj' : (isStarted ? 'Reanudar' : 'Iniciar Reloj EMOM')}
-                          </button>
-                        )}
-                        {isStarted && !esRegistroPasado && (
-                          <button 
-                            onClick={() => resetEmom(bIndex)}
-                            style={{ ...btnStyle, width: 'auto', padding: '8px 16px', backgroundColor: '#333', color: '#fff', fontSize: '0.9rem' }}
-                          >
-                            Reiniciar
-                          </button>
-                        )}
-                      </div>
+              return (
+                <div key={ej} style={{ ...cardStyle, marginBottom: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                    <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '600' }}>{ej}</h3>
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                      <button onClick={() => setEstadoRutina(p => ({ ...p, [ej]: { ...(p[ej] || {}), mostrandoInfo: !p[ej]?.mostrandoInfo } }))} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: '#3b82f6' }}>ⓘ</button>
+                      <button onClick={() => setEstadoRutina(p => ({ ...p, [ej]: { ...(p[ej] || {}), mostrandoNota: !p[ej]?.mostrandoNota } }))} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: '#3b82f6' }}>✏️</button>
                     </div>
+                  </div>
 
-                    {esRegistroPasado ? (
-                      <div style={{ marginBottom: '24px' }}>
-                        <input 
-                          type="number" 
-                          min="1" 
-                          max="10" 
-                          placeholder="Rondas completadas (ej. 10)" 
-                          value={estadoRutina[`EMOM_RONDAS_${bIndex}`] || ''} 
-                          onChange={(e) => setEstadoRutina(prev => ({ ...prev, [`EMOM_RONDAS_${bIndex}`]: e.target.value }))} 
-                          style={{ ...inputStyle, textAlign: 'center', fontSize: '1.1rem' }} 
-                        />
-                      </div>
-                    ) : (
-                      <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-                        {isCompleted ? (
-                          <span style={{ fontSize: '2rem', fontWeight: '800', color: '#22c55e', display: 'block' }}>¡EMOM Superado!</span>
-                        ) : (
-                          <>
-                            <span style={{ fontSize: '1rem', color: tema.textMuted, display: 'block', textTransform: 'uppercase', letterSpacing: '2px' }}>
-                              Ronda {rondaActual} de 10
-                            </span>
-                            <span style={{ fontSize: '4rem', fontWeight: '800', fontFamily: 'monospace', color: timerState.activo ? '#22c55e' : '#fff' }}>
-                              {String(segundosRestantes).padStart(2, '0')}
-                            </span>
-                          </>
-                        )}
-                      </div>
-                    )}
+                  {estadoRutina[ej]?.mostrandoInfo && (
+                    <div style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '12px', marginBottom: '16px', borderLeft: '3px solid #3b82f6', fontSize: '0.9rem', color: '#e5e7eb', whiteSpace: 'pre-line' }}>{obtenerInfoEjercicio(ej)}</div>
+                  )}
 
-                    <div style={{ borderBottom: `1px solid ${tema.border}`, marginBottom: '16px', paddingBottom: '16px' }}>
-                      <p style={{ color: tema.textMuted, fontSize: '0.85rem', lineHeight: '1.5' }}>
-                        Introduce el peso de cada ejercicio antes de empezar. Pulsa "Registrar Bloque Completo" para guardar las rondas que hayas completado.
-                      </p>
+                  {estadoRutina[ej]?.mostrandoNota && (
+                    <div style={{ marginBottom: '16px', display: 'flex', gap: '8px' }}>
+                      <textarea value={estadoRutina[ej]?.textoNota || ''} onChange={(e) => setEstadoRutina(p => ({ ...p, [ej]: { ...(p[ej] || {}), textoNota: e.target.value } }))} placeholder="Nota..." style={{ ...inputStyle, marginBottom: 0, minHeight: '40px', flex: 1 }} />
+                      <button onClick={() => registrarNota(ej)} style={{ ...btnStyle, width: 'auto', backgroundColor: '#3b82f6', color: '#fff', padding: '10px' }} disabled={cargando}>Ok</button>
                     </div>
+                  )}
 
-                    {bloque.ejercicios.map(ej => {
-                      const desactivarPeso = false; 
-                      return (
-                        <div key={ej} style={{ marginBottom: '16px' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                            <span style={{ fontWeight: '600', fontSize: '1.05rem' }}>{ej}</span>
-                            <button 
-                              onClick={() => setEstadoRutina(prev => ({ ...prev, [ej]: { ...(prev[ej] || {}), mostrandoInfo: !(prev[ej]?.mostrandoInfo) } }))} 
-                              style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', color: estadoRutina[ej]?.mostrandoInfo ? '#3b82f6' : tema.textMuted, padding: '0 4px' }}
-                            >ⓘ</button>
-                          </div>
-
-                          {estadoRutina[ej]?.mostrandoInfo && (
-                            <div style={{ backgroundColor: '#1a1a1a', padding: '12px', borderRadius: '8px', marginBottom: '12px', borderLeft: '3px solid #3b82f6', fontSize: '0.85rem', color: '#e5e7eb', whiteSpace: 'pre-line' }}>
-                              {obtenerInfoEjercicio(ej)}
-                            </div>
-                          )}
-
-                          <div style={{ display: 'flex', gap: '8px' }}>
-                            <input type="number" step="any" placeholder={"Peso/Lastre"} value={estadoRutina[ej]?.peso || ''} onChange={(e) => setEstadoRutina(prev => ({ ...prev, [ej]: { ...(prev[ej] || {}), peso: e.target.value } }))} style={{ ...inputStyle, padding: '12px' }} />
-                            <input type="number" placeholder="Reps / Ronda" value={estadoRutina[ej]?.reps || ''} onChange={(e) => setEstadoRutina(prev => ({ ...prev, [ej]: { ...(prev[ej] || {}), reps: e.target.value } }))} style={{...inputStyle, padding: '12px'}} />
-                          </div>
+                  {seriesReg.length > 0 && (
+                    <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {seriesReg.map((sr, idx) => (
+                        <div key={sr.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#111', padding: '10px 12px', borderRadius: '8px', fontSize: '0.9rem' }}>
+                          <span style={{ color: sr.categoria === 'recuperacion' ? '#f59e0b' : '#8a8a8e' }}>{sr.categoria === 'recuperacion' ? 'Recuperación' : `Serie ${idx + 1}`}</span>
+                          <span style={{ fontWeight: '600' }}>{formatearMetricaUI(sr)}</span>
+                          <button onClick={() => borrarRegistro(sr.id, 'series')} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>✕</button>
                         </div>
-                      );
-                    })}
+                      ))}
+                    </div>
+                  )}
 
-                    <button 
-                      onClick={() => registrarBloqueEMOM(bloque.ejercicios, bIndex)} 
-                      style={{ ...btnStyle, backgroundColor: isCompleted ? '#22c55e' : '#8b5cf6', color: '#fff', marginTop: '12px' }}
-                      disabled={cargando}
-                    >
-                      Registrar Bloque Completo ({esRegistroPasado ? (estadoRutina[`EMOM_RONDAS_${bIndex}`] || '?') : (isCompleted ? 10 : rondaActual)} Rondas)
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <input type="number" step="any" placeholder="Peso/Lastre" value={estadoRutina[ej]?.peso || ''} onChange={(e) => setEstadoRutina(p => ({ ...p, [ej]: { ...(p[ej] || {}), peso: e.target.value } }))} style={{ ...inputStyle, marginBottom: 0 }} />
+                    <input type="number" placeholder="Reps" value={estadoRutina[ej]?.reps || ''} onChange={(e) => setEstadoRutina(p => ({ ...p, [ej]: { ...(p[ej] || {}), reps: e.target.value } }))} style={{ ...inputStyle, marginBottom: 0 }} />
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+                    <button onClick={() => registrarSerieRutina(ej)} style={{ ...btnStyle, flex: 6, padding: '12px', backgroundColor: '#2a2a2a', color: '#fff', fontSize: '0.95rem' }} disabled={cargando}>Registrar Serie</button>
+                    <button onClick={() => toggleRecuperacion(ej)} style={{ ...btnStyle, flex: 4, padding: '12px', backgroundColor: descansoActivo ? 'transparent' : '#f59e0b', color: descansoActivo ? '#f59e0b' : '#000', border: '2px solid #f59e0b', fontSize: '0.95rem' }} disabled={cargando}>
+                      {descansoActivo ? formatearTiempo(segundosDescanso) : 'Recuperación'}
                     </button>
                   </div>
-                );
-              }
-
-              return bloque.ejercicios.map(ej => {
-                const cat = clasificarEjercicio(ej);
-                
-                const esTimerOnly = cat === 'movilidad' || cat === 'cardio';
-                const esIsometria = cat === 'isometria';
-                const esHiit = cat === 'hiit';
-                
-                const mostrarInputsFuerza = cat === 'fuerza' || cat === 'traslado' || cat === 'hiit';
-                const mostrarInputsTiempoDiferido = (esTimerOnly || esIsometria) && esRegistroPasado;
-                const mostrarInputPesoAislado = esIsometria && !esRegistroPasado;
-                const mostrarCronoVivo = (!esRegistroPasado && (esTimerOnly || esIsometria));
-
-                let placeholderSecundario = 'Valor';
-                if (cat === 'fuerza') placeholderSecundario = 'Reps';
-                if (cat === 'traslado') placeholderSecundario = 'Metros';
-
-                const sesionActual = sesionesHistorial.find(s => s.id === sesionActivaId);
-                const seriesRegistradas = sesionActual?.series.filter(s => s.ejercicio === ej) || [];
-                const descansoDeEsteEjercicio = descansoActual.activo && descansoActual.ejercicio === ej;
-
-                // Cálculos en vivo para HIIT (10 Rondas de 40s = 400s)
-                const hiitState = hiitTimers[ej] || { activo: false, inicioTick: null, acumulado: 0 };
-                let hiitSecs = hiitState.acumulado;
-                if (hiitState.activo && hiitState.inicioTick) {
-                    hiitSecs += Math.floor((now - hiitState.inicioTick) / 1000);
-                }
-                const isHiitCompleted = hiitSecs >= 400;
-                let hiitRonda = Math.floor(hiitSecs / 40) + 1;
-                if (hiitSecs >= 400) hiitRonda = 10;
-                if (hiitSecs === 0) hiitRonda = 0;
-                
-                const phaseSecs = hiitSecs % 40;
-                const isSprint = phaseSecs < 20 && !isHiitCompleted && hiitSecs > 0;
-                const isRecovery = phaseSecs >= 20 && !isHiitCompleted && hiitSecs > 0;
-                const currentPhaseSecs = isSprint ? 20 - phaseSecs : (isRecovery ? 40 - phaseSecs : 0);
-
-                return (
-                  <div key={ej} style={{ ...cardStyle, marginBottom: '20px' }}>
-                    
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                      <h3 style={{ margin: 0, fontSize: '1.1rem', fontWeight: '600' }}>{ej}</h3>
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <button 
-                          onClick={() => setEstadoRutina(prev => ({ ...prev, [ej]: { ...(prev[ej] || {}), mostrandoInfo: !(prev[ej]?.mostrandoInfo) } }))} 
-                          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: estadoRutina[ej]?.mostrandoInfo ? '#3b82f6' : tema.textMuted, padding: '0 4px' }}
-                          title="Ver ejecución del ejercicio"
-                        >ⓘ</button>
-                        <button 
-                          onClick={() => setEstadoRutina(prev => ({ ...prev, [ej]: { ...(prev[ej] || {}), mostrandoNota: !(prev[ej]?.mostrandoNota) } }))} 
-                          style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.2rem', color: estadoRutina[ej]?.mostrandoNota ? '#3b82f6' : tema.textMuted, padding: '0 4px' }}
-                          title="Añadir nota de sensación"
-                        >✏️</button>
-                      </div>
-                    </div>
-
-                    {estadoRutina[ej]?.mostrandoInfo && (
-                      <div style={{ backgroundColor: '#1a1a1a', padding: '16px', borderRadius: '12px', marginBottom: '16px', borderLeft: '3px solid #3b82f6', fontSize: '0.9rem', color: '#e5e7eb', whiteSpace: 'pre-line', lineHeight: '1.5' }}>
-                        {obtenerInfoEjercicio(ej)}
-                      </div>
-                    )}
-
-                    {estadoRutina[ej]?.mostrandoNota && (
-                      <div style={{ marginBottom: '16px', display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-                        <textarea
-                          value={estadoRutina[ej]?.textoNota || ''}
-                          onChange={(e) => setEstadoRutina(prev => ({ ...prev, [ej]: { ...(prev[ej] || {}), textoNota: e.target.value } }))}
-                          placeholder="Añade una sensación de esta serie..."
-                          style={{ ...inputStyle, marginBottom: 0, resize: 'vertical', minHeight: '52px', flex: 1, padding: '14px' }}
-                        />
-                        <button 
-                          onClick={() => registrarNota(ej)} 
-                          style={{ ...btnStyle, width: 'auto', backgroundColor: '#3b82f6', color: '#fff', padding: '14px 16px', fontSize: '0.9rem' }}
-                          disabled={cargando || !estadoRutina[ej]?.textoNota?.trim()}
-                        >Guardar</button>
-                      </div>
-                    )}
-
-                    {seriesRegistradas.length > 0 && (
-                      <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {(() => {
-                          let contadorSerie = 0;
-                          return seriesRegistradas.map((serie) => {
-                            const esRecuperacion = serie.categoria === 'recuperacion';
-                            const esNota = serie.categoria === 'nota';
-                            if (!esRecuperacion && !esNota) contadorSerie++;
-                            
-                            return (
-                              <div key={serie.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: esNota ? '#1a1a1a' : '#111', padding: '10px 12px', borderRadius: '8px', fontSize: '0.9rem', borderLeft: esNota ? '2px solid #3b82f6' : 'none' }}>
-                                <span style={{ color: esRecuperacion ? '#f59e0b' : (esNota ? '#3b82f6' : tema.textMuted), fontWeight: (esRecuperacion || esNota) ? '600' : 'normal', flex: esNota ? 'none' : 1 }}>
-                                  {esRecuperacion ? 'Recuperación' : (esNota ? 'Nota:' : `Serie ${contadorSerie}`)}
-                                </span>
-                                <span style={{ fontWeight: esNota ? 'normal' : '600', color: esRecuperacion ? '#f59e0b' : (esNota ? '#ccc' : '#fff'), flex: esNota ? 1 : 'none', marginLeft: esNota ? '8px' : 0, fontStyle: esNota ? 'italic' : 'normal' }}>
-                                  {formatearMetricaUI(serie)}
-                                </span>
-                                <button onClick={() => borrarRegistro(serie.id, 'series')} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0 4px', fontSize: '1.1rem', marginLeft: '8px' }}>✕</button>
-                              </div>
-                            );
-                          });
-                        })()}
-                      </div>
-                    )}
-
-                    {/* BLOQUE DE INTERFAZ HIIT EN VIVO */}
-                    {esHiit && !esRegistroPasado && (
-                        <div style={{ ...cardStyle, marginBottom: '16px', backgroundColor: '#111', border: isHiitCompleted ? '2px solid #22c55e' : (isSprint ? '2px solid #ef4444' : (isRecovery ? '2px solid #3b82f6' : '2px solid #f59e0b')) }}>
-                            <div style={{ textAlign: 'center', marginBottom: '12px' }}>
-                                {isHiitCompleted ? (
-                                    <span style={{ fontSize: '1.5rem', fontWeight: '800', color: '#22c55e' }}>¡HIIT Completado!</span>
-                                ) : (
-                                    <>
-                                        <span style={{ fontSize: '1rem', color: tema.textMuted, display: 'block', textTransform: 'uppercase', letterSpacing: '2px' }}>
-                                            Ronda {hiitRonda} de 10
-                                        </span>
-                                        <span style={{ fontSize: '1.5rem', fontWeight: '700', color: isSprint ? '#ef4444' : (isRecovery ? '#3b82f6' : '#f59e0b'), display: 'block', margin: '8px 0' }}>
-                                            {hiitSecs === 0 ? 'PREPARADO' : (isSprint ? '🔥 SPRINT' : '🧊 RECUPERACIÓN')}
-                                        </span>
-                                        <span style={{ fontSize: '4rem', fontWeight: '800', fontFamily: 'monospace', color: '#fff' }}>
-                                            {String(hiitSecs === 0 ? 20 : currentPhaseSecs).padStart(2, '0')}
-                                        </span>
-                                    </>
-                                )}
-                            </div>
-                            <div style={{ display: 'flex', gap: '8px' }}>
-                                {!isHiitCompleted && (
-                                    <button onClick={() => toggleHiit(ej)} style={{ ...btnStyle, flex: 1, backgroundColor: hiitState.activo ? '#4a4a4a' : '#f59e0b', color: '#fff' }}>
-                                        {hiitState.activo ? 'Pausar' : (hiitSecs > 0 ? 'Reanudar' : 'Iniciar HIIT')}
-                                    </button>
-                                )}
-                                {hiitSecs > 0 && (
-                                    <button onClick={() => resetHiit(ej)} style={{ ...btnStyle, width: 'auto', flex: 'none', backgroundColor: '#333', color: '#fff' }}>↺</button>
-                                )}
-                            </div>
-                        </div>
-                    )}
-
-                    <div style={{ display: 'flex', gap: '8px', flexDirection: 'column' }}>
-                        
-                        {/* INPUTS DE FUERZA, TRASLADO O HIIT */}
-                        {mostrarInputsFuerza && (
-                            <div style={{ display: 'flex', gap: '8px' }}>
-                                <input type="number" step="any" placeholder={cat === 'traslado' ? "Peso/Mano" : "Peso/Lastre"} value={estadoRutina[ej]?.peso || ''} onChange={(e) => setEstadoRutina(prev => ({ ...prev, [ej]: { ...(prev[ej] || {}), peso: e.target.value } }))} style={{ ...inputStyle, opacity: esHiit ? 0.3 : 1 }} disabled={esHiit} />
-                                {(!esHiit || esRegistroPasado) && (
-                                    <input type="number" placeholder={esHiit ? 'Rondas' : placeholderSecundario} value={estadoRutina[ej]?.reps || ''} onChange={(e) => setEstadoRutina(prev => ({ ...prev, [ej]: { ...(prev[ej] || {}), reps: e.target.value } }))} style={inputStyle} />
-                                )}
-                            </div>
-                        )}
-
-                        {/* INPUTS DE TIEMPO DIFERIDO (HISTORIAL) */}
-                        {mostrarInputsTiempoDiferido && (
-                            <div style={{ display: 'flex', gap: '8px' }}>
-                                {esIsometria && (
-                                    <input type="number" step="any" placeholder="Peso/Lastre" value={estadoRutina[ej]?.peso || ''} onChange={(e) => setEstadoRutina(prev => ({ ...prev, [ej]: { ...(prev[ej] || {}), peso: e.target.value } }))} style={inputStyle} />
-                                )}
-                                <input type="number" placeholder="Min" value={estadoRutina[ej]?.mins || ''} onChange={(e) => setEstadoRutina(prev => ({ ...prev, [ej]: { ...(prev[ej] || {}), mins: e.target.value } }))} style={inputStyle} />
-                                <input type="number" placeholder="Seg" value={estadoRutina[ej]?.secs || ''} onChange={(e) => setEstadoRutina(prev => ({ ...prev, [ej]: { ...(prev[ej] || {}), secs: e.target.value } }))} style={inputStyle} />
-                            </div>
-                        )}
-
-                        {/* INPUT DE PESO PARA ISOMETRÍA EN VIVO */}
-                        {mostrarInputPesoAislado && (
-                             <div style={{ display: 'flex', gap: '8px' }}>
-                                <input type="number" step="any" placeholder="Peso/Lastre (Opcional)" value={estadoRutina[ej]?.peso || ''} onChange={(e) => setEstadoRutina(prev => ({ ...prev, [ej]: { ...(prev[ej] || {}), peso: e.target.value } }))} style={inputStyle} />
-                             </div>
-                        )}
-
-                        {/* CRONÓMETRO EN VIVO */}
-                        {mostrarCronoVivo && (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                                <div style={{ backgroundColor: '#1a1a1a', padding: '14px', borderRadius: '16px', flex: 1, textAlign: 'center', border: `1px solid ${ejTimers[ej]?.activo ? '#22c55e' : tema.border}` }}>
-                                    <span style={{ fontSize: '1.3rem', fontWeight: 'bold', fontFamily: 'monospace', color: ejTimers[ej]?.activo ? '#22c55e' : '#fff' }}>
-                                        {formatearCrono(getEjTimerSecs(ej))}
-                                    </span>
-                                </div>
-                                <button onClick={() => toggleEjTimer(ej)} style={{ ...btnStyle, margin: 0, padding: '14px', flex: 1, backgroundColor: ejTimers[ej]?.activo ? '#ef4444' : '#3b82f6', fontSize: '1rem' }}>
-                                    {ejTimers[ej]?.activo ? '⏹ Parar' : '▶ Iniciar'}
-                                </button>
-                                {(getEjTimerSecs(ej) > 0 || ejTimers[ej]?.activo) && (
-                                    <button onClick={() => resetEjTimer(ej)} style={{ ...btnStyle, margin: 0, padding: '14px', flex: 'none', width: 'auto', backgroundColor: '#4a4a4a' }}>↺</button>
-                                )}
-                            </div>
-                        )}
-                    </div>
-                    
-                    <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
-                      <button 
-                        onClick={() => registrarSerieRutina(ej)} 
-                        style={{ ...btnStyle, flex: 6, padding: '12px', fontSize: '0.95rem', backgroundColor: '#2a2a2a', color: '#fff' }} 
-                        disabled={cargando}
-                      >Registrar Serie</button>
-                      
-                      <button 
-                        onClick={() => toggleRecuperacion(ej)} 
-                        style={{ 
-                          ...btnStyle, flex: 4, padding: '12px', fontSize: '0.95rem', 
-                          backgroundColor: descansoDeEsteEjercicio ? 'transparent' : '#f59e0b', 
-                          color: descansoDeEsteEjercicio ? '#f59e0b' : '#000',
-                          border: descansoDeEsteEjercicio ? '2px solid #f59e0b' : '2px solid #f59e0b'
-                        }} 
-                        disabled={cargando || (descansoActual.activo && !descansoDeEsteEjercicio)}
-                      >
-                        {descansoDeEsteEjercicio ? formatearTiempo(segundosDescanso) : 'Recuperación'}
-                      </button>
-                    </div>
-                  </div>
-                );
-              });
+                </div>
+              );
             })}
-            
-            <button onClick={finalizarSesion} style={{ ...btnStyle, marginTop: '24px', backgroundColor: '#fff', color: '#000' }}>
-              {fechaEntrenamiento !== `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}` ? 'Finalizar registro' : 'Finalizar entrenamiento'}
-            </button>
+
+            <button onClick={finalizarSesion} style={{ ...btnStyle, marginTop: '24px', backgroundColor: '#fff', color: '#000' }}>Finalizar entrenamiento</button>
           </div>
         )}
 
-        {/* --- VISTA: RESUMEN FINAL DE SESIÓN --- */}
+        {/* --- VISTA: RESUMEN FINAL --- */}
         {vista === 'resumen_final' && (
           <div style={{ textAlign: 'center', padding: '20px 0' }}>
-            <h2 style={{ fontSize: '2rem', color: '#22c55e', marginBottom: '8px' }}>¡Buen trabajo!</h2>
+            <h2 style={{ fontSize: '2rem', color: '#22c55e', marginBottom: '8px' }}>¡Buen trabajo Carlos!</h2>
             <p style={{ color: tema.textMuted, marginBottom: '32px' }}>Has finalizado {rutinasDb[diaActivo]?.titulo}</p>
-            
             <div style={{ ...cardStyle, marginBottom: '24px', padding: '32px 16px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <span style={{ color: tema.textMuted, fontSize: '0.9rem', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '1px' }}>Tiempo Total</span>
+              <span style={{ color: tema.textMuted, fontSize: '0.9rem', fontWeight: '600', textTransform: 'uppercase' }}>Tiempo Total</span>
               <span style={{ fontSize: '3rem', fontWeight: '700', marginTop: '8px' }}>{formatearTiempo(segundos)}</span>
             </div>
-
-            {hitosHoy.length > 0 && (
-              <div style={{ ...cardStyle, marginBottom: '32px', border: '2px solid #eab308', backgroundColor: '#eab30815' }}>
-                <h3 style={{ margin: '0 0 16px 0', fontSize: '1.4rem', color: '#eab308' }}>🏆 ¡Nuevos Hitos Alcanzados!</h3>
-                {hitosHoy.map(hito => (
-                  <div key={hito.id} style={{ marginBottom: '12px', textAlign: 'left', borderBottom: '1px solid #eab30840', paddingBottom: '8px' }}>
-                    <span style={{ display: 'block', fontWeight: '700', color: '#fff', fontSize: '1.1rem' }}>{hito.ejercicio}</span>
-                    <span style={{ color: '#eab308', fontSize: '0.95rem' }}>Has aumentado <strong>{hito.mensaje}</strong>. ¡Sigue así!</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <div style={{ textAlign: 'left', marginBottom: '32px' }}>
-              <h3 style={{ fontSize: '1.2rem', marginBottom: '16px', paddingBottom: '8px', borderBottom: `1px solid ${tema.border}` }}>Volumen de la sesión</h3>
-              {Object.keys(seriesAgrupadasResumen).length === 0 ? (
-                <p style={{ color: tema.textMuted }}>No se registraron series.</p>
-              ) : (
-                Object.entries(seriesAgrupadasResumen).map(([ejercicio, data]) => (
-                  <div key={ejercicio} style={{ marginBottom: '16px' }}>
-                    <span style={{ display: 'block', fontWeight: '600', marginBottom: '4px' }}>{ejercicio}</span>
-                    <span style={{ color: tema.textMuted, fontSize: '0.95rem' }}>
-                      {data.categoria === 'emom' || data.categoria === 'hiit'
-                        ? `${data.metricas.length} rondas registradas (Ej: ${data.metricas[0]})`
-                        : (data.categoria === 'calentamiento' ? `${data.metricas.length} log registrado` : `${data.metricas.length} series: [${data.metricas.join(', ')}]`)
-                      }
-                    </span>
-                  </div>
-                ))
-              )}
-            </div>
-
             <button onClick={() => setVista('menu')} style={{ ...btnStyle, backgroundColor: '#fff', color: '#000' }}>Volver al menú</button>
           </div>
         )}
@@ -1724,48 +1002,14 @@ export default function App() {
         {vista === 'peso' && (
           <div style={{ paddingBottom: '40px' }}>
             <h2 style={{ fontSize: '1.5rem', marginBottom: '20px' }}>Gestión de Peso Corporal</h2>
-
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '24px', padding: '4px', backgroundColor: '#1a1a1a', borderRadius: '14px' }}>
-              <button 
-                onClick={() => setSubVistaPeso('lista')} 
-                style={{ flex: 1, padding: '10px', borderRadius: '10px', border: 'none', backgroundColor: subVistaPeso === 'lista' ? '#3b82f6' : 'transparent', color: subVistaPeso === 'lista' ? '#fff' : tema.textMuted, fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }}
-              >Actualizar / Historial</button>
-              <button 
-                onClick={() => setSubVistaPeso('grafico')} 
-                style={{ flex: 1, padding: '10px', borderRadius: '10px', border: 'none', backgroundColor: subVistaPeso === 'grafico' ? '#3b82f6' : 'transparent', color: subVistaPeso === 'grafico' ? '#fff' : tema.textMuted, fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }}
-              >Ver Gráfico</button>
-            </div>
-
-            {subVistaPeso === 'lista' && (
-              <div>
-                <FormularioPeso onGuardar={guardarPeso} cargando={cargando} />
-                <h3 style={{ fontSize: '1.1rem', color: tema.textMuted, marginBottom: '16px' }}>Bitácora de peso</h3>
-                {historialPeso.map(item => (
-                  <div key={item.id} style={{ ...cardStyle, display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', padding: '16px' }}>
-                    <div><span style={{ display: 'block', fontWeight: '600', fontSize: '1.2rem' }}>{item.peso} kg</span><span style={{ fontSize: '0.8rem', color: tema.textMuted }}>{new Date(item.created_at).toLocaleDateString()}</span></div>
-                    <button onClick={() => borrarRegistro(item.id, 'historial_peso')} style={{ background: 'none', border: 'none', color: tema.textMuted, cursor: 'pointer', fontSize: '1.2rem', padding: '4px' }}>✕</button>
-                  </div>
-                ))}
+            <FormularioPeso onGuardar={guardarPeso} cargando={cargando} />
+            <h3 style={{ fontSize: '1.1rem', color: tema.textMuted, marginBottom: '16px' }}>Bitácora de peso</h3>
+            {historialPeso.map(item => (
+              <div key={item.id} style={{ ...cardStyle, display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', padding: '16px' }}>
+                <div><span style={{ display: 'block', fontWeight: '600', fontSize: '1.2rem' }}>{item.peso} kg</span><span style={{ fontSize: '0.8rem', color: tema.textMuted }}>{new Date(item.created_at).toLocaleDateString()}</span></div>
+                <button onClick={() => borrarRegistro(item.id, 'historial_peso')} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>✕</button>
               </div>
-            )}
-
-            {subVistaPeso === 'grafico' && (
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
-                  <select 
-                    value={rangoGrafico} 
-                    onChange={(e) => setRangoGrafico(e.target.value)} 
-                    style={{ ...inputStyle, width: 'auto', marginBottom: 0, padding: '8px 16px', borderRadius: '8px' }}
-                  >
-                    <option value="7">Últimos 7 días</option>
-                    <option value="30">Últimos 30 días</option>
-                    <option value="90">Últimos 3 meses</option>
-                    <option value="all">Histórico completo</option>
-                  </select>
-                </div>
-                <GraficoSVG historial={historialPeso} rango={rangoGrafico} />
-              </div>
-            )}
+            ))}
           </div>
         )}
 
@@ -1773,269 +1017,51 @@ export default function App() {
         {vista === 'historial' && (
           <div>
             <h2 style={{ fontSize: '1.5rem', marginBottom: '20px' }}>Historial</h2>
-            <button onClick={() => setVista('seleccion_pasado')} style={{ ...btnStyle, marginBottom: '24px', backgroundColor: '#fff', color: '#000' }}>
-              + Añadir Registro Pasado
-            </button>
-            
-            <div style={{ marginBottom: '24px', display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <input 
-                type="date" 
-                value={filtroFechaHistorial}
-                onChange={(e) => setFiltroFechaHistorial(e.target.value)}
-                style={{ ...inputStyle, marginBottom: 0, flex: 1, padding: '12px', colorScheme: 'dark' }}
-              />
-              {filtroFechaHistorial && (
-                <button 
-                  onClick={() => setFiltroFechaHistorial('')} 
-                  style={{ ...btnStyle, width: 'auto', padding: '12px 16px', backgroundColor: '#ef4444', color: '#fff' }}
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-            
-            {(() => {
-              const sesionesFiltradas = filtroFechaHistorial 
-                ? sesionesHistorial.filter(s => s.fecha === filtroFechaHistorial)
-                : sesionesHistorial;
-                
-              if (sesionesFiltradas.length === 0) {
-                return <p style={{ color: tema.textMuted }}>{filtroFechaHistorial ? 'No hay entrenamientos registrados en esta fecha.' : 'Sin registros.'}</p>;
-              }
-
-              return sesionesFiltradas.map(sesion => (
-                <div key={sesion.id} onClick={() => { setSesionSeleccionada(sesion); setVista('resumen_dia'); }} style={{ ...navItemStyle, marginBottom: '12px', padding: '16px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <span style={{ fontWeight: '600', fontSize: '1.1rem' }}>{sesion.nombre_rutina}</span>
-                    <span style={{ fontSize: '0.85rem', color: tema.textMuted }}>{new Date(sesion.fecha + 'T00:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' })}</span>
-                  </div>
-                  
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    {sesion.duracion_segundos > 0 && (
-                      <span style={{ fontSize: '0.9rem', color: tema.textMuted, marginRight: '12px' }}>
-                        ⏱ {formatearTiempo(sesion.duracion_segundos)}
-                      </span>
-                    )}
-                    <span style={{ color: tema.textMuted, fontSize: '1.2rem' }}>→</span>
-                  </div>
-                </div>
-              ));
-            })()}
+            <button onClick={() => setVista('seleccion_pasado')} style={{ ...btnStyle, marginBottom: '24px', backgroundColor: '#fff', color: '#000' }}>+ Añadir Registro Pasado</button>
+            {sesionesHistorial.length === 0 ? <p style={{ color: tema.textMuted }}>Sin registros.</p> : sesionesHistorial.map(ses => (
+              <div key={ses.id} onClick={() => { setSesionSeleccionada(ses); setVista('resumen_dia'); }} style={{ ...navItemStyle, marginBottom: '12px', padding: '16px' }}>
+                <div><span style={{ fontWeight: '600', fontSize: '1.1rem' }}>{ses.nombre_rutina}</span><span style={{ display: 'block', fontSize: '0.85rem', color: tema.textMuted }}>{ses.fecha}</span></div>
+                <span>→</span>
+              </div>
+            ))}
           </div>
         )}
 
-        {/* --- VISTA: ESTADÍSTICAS Y PROGRESO --- */}
+        {/* --- VISTA: ESTADÍSTICAS Y LOGROS --- */}
         {vista === 'estadisticas' && (
           <div style={{ paddingBottom: '40px' }}>
-            
-            <div style={{ display: 'flex', gap: '8px', marginBottom: '24px', padding: '4px', backgroundColor: '#1a1a1a', borderRadius: '14px' }}>
-              <button 
-                onClick={() => setSubVistaEstadisticas('evolucion')} 
-                style={{ flex: 1, padding: '10px', borderRadius: '10px', border: 'none', backgroundColor: subVistaEstadisticas === 'evolucion' ? '#3b82f6' : 'transparent', color: subVistaEstadisticas === 'evolucion' ? '#fff' : tema.textMuted, fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }}
-              >Evolución</button>
-              <button 
-                onClick={() => setSubVistaEstadisticas('marcas')} 
-                style={{ flex: 1, padding: '10px', borderRadius: '10px', border: 'none', backgroundColor: subVistaEstadisticas === 'marcas' ? '#3b82f6' : 'transparent', color: subVistaEstadisticas === 'marcas' ? '#fff' : tema.textMuted, fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }}
-              >Marcas</button>
-              <button 
-                onClick={() => setSubVistaEstadisticas('logros')} 
-                style={{ flex: 1, padding: '10px', borderRadius: '10px', border: 'none', backgroundColor: subVistaEstadisticas === 'logros' ? '#eab308' : 'transparent', color: subVistaEstadisticas === 'logros' ? '#fff' : tema.textMuted, fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }}
-              >Logros 🏆</button>
-            </div>
-
-            {subVistaEstadisticas === 'evolucion' && (
-              <div>
-                <h2 style={{ fontSize: '1.5rem', marginBottom: '8px' }}>Rendimiento Reciente</h2>
-                <p style={{ color: tema.textMuted, fontSize: '0.9rem', marginBottom: '24px' }}>
-                  Comparativa de métricas respecto a tu sesión anterior.
-                </p>
-                
-                {calcularProgreso().length === 0 ? (
-                  <div style={{ ...cardStyle, textAlign: 'center' }}>
-                    <p style={{ color: tema.textMuted }}>Necesitas registrar el mismo ejercicio en al menos dos días distintos para generar estadísticas.</p>
-                  </div>
-                ) : (
-                  calcularProgreso().map((cat, idx) => (
-                    <div key={idx} style={{ marginBottom: '24px' }}>
-                      <h3 style={{ fontSize: '1.1rem', color: '#fff', marginBottom: '12px', paddingBottom: '8px', borderBottom: `1px solid ${tema.border}` }}>
-                        {cat.categoria}
-                      </h3>
-                      {cat.progresos.map((prog, pIdx) => {
-                        const renderDif = (dif, label) => {
-                          const val = Math.abs(dif);
-                          const valStr = Number.isInteger(val) ? val : val.toFixed(1);
-                          const unidad = label === 'Peso' ? 'kg' : (label === '' ? '' : ` ${label}`);
-                          
-                          if (dif > 0) return <span style={{ color: '#22c55e' }}>▲ {valStr}{unidad}</span>;
-                          if (dif < 0) return <span style={{ color: '#ef4444' }}>▼ {valStr}{unidad}</span>;
-                          return <span style={{ color: tema.textMuted }}>▬ 0{unidad}</span>;
-                        };
-
-                        const fechaFormat = new Date(prog.fechaActual + 'T00:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-
-                        if (prog.categoriaEj === 'emom' || prog.categoriaEj === 'hiit') {
-                          return (
-                            <div key={pIdx} style={{ ...cardStyle, marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <div>
-                                <span style={{ display: 'block', fontWeight: '600', fontSize: '1.05rem', marginBottom: '4px' }}>{prog.ejercicio}</span>
-                                <span style={{ fontSize: '0.85rem', color: tema.textMuted }}>
-                                  {fechaFormat} • {prog.pesoActual > 0 ? `${prog.pesoActual}kg / ` : ''}{prog.rondasActual} Rondas de {prog.repsPorRondaActual} Reps
-                                </span>
-                              </div>
-                              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', fontWeight: '700', fontSize: '0.95rem' }}>
-                                {prog.pesoActual > 0 && renderDif(prog.difPeso, 'Peso')}
-                                {renderDif(prog.difRondas, 'Rondas')}
-                                {renderDif(prog.difRepsPorRonda, 'Reps/R')}
-                              </div>
-                            </div>
-                          );
-                        }
-
-                        let formatSecundario = 'Reps';
-                        if (prog.categoriaEj === 'cardio' || prog.categoriaEj === 'movilidad') formatSecundario = 'Min';
-                        if (prog.categoriaEj === 'isometria') formatSecundario = 'Seg';
-                        if (prog.categoriaEj === 'traslado') formatSecundario = 'Metros';
-
-                        return (
-                          <div key={pIdx} style={{ ...cardStyle, marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div>
-                              <span style={{ display: 'block', fontWeight: '600', fontSize: '1.05rem', marginBottom: '4px' }}>{prog.ejercicio}</span>
-                              <span style={{ fontSize: '0.85rem', color: tema.textMuted }}>
-                                {fechaFormat} • {prog.categoriaEj !== 'cardio' && prog.categoriaEj !== 'movilidad' && prog.pesoActual > 0 ? `${prog.pesoActual}kg / ` : ''} Tot: {prog.secundarioActual} {formatSecundario.toLowerCase()}
-                              </span>
-                            </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', fontWeight: '700', fontSize: '0.95rem' }}>
-                              {prog.categoriaEj !== 'cardio' && prog.categoriaEj !== 'movilidad' && renderDif(prog.difPeso, 'Peso')}
-                              {renderDif(prog.difSecundario, formatSecundario)}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ))
-                )}
-              </div>
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '8px', color: '#eab308' }}>Logros 🏆</h2>
+            <p style={{ color: tema.textMuted, fontSize: '0.9rem', marginBottom: '24px' }}>Línea temporal de récords personales.</p>
+            {historialHitos.length === 0 ? (
+              <div style={{ ...cardStyle, textAlign: 'center' }}><p style={{ color: tema.textMuted }}>Aún no hay hitos registrados.</p></div>
+            ) : (
+              historialHitos.map(h => (
+                <div key={h.id} style={{ ...cardStyle, marginBottom: '16px', borderLeft: '4px solid #eab308', backgroundColor: '#eab3080a' }}>
+                  <span style={{ fontWeight: '700', fontSize: '1.1rem' }}>{h.ejercicio}</span>
+                  <p style={{ margin: '4px 0 0 0', color: '#eab308' }}>{h.mensaje}</p>
+                </div>
+              ))
             )}
-
-            {subVistaEstadisticas === 'marcas' && (
-              <div>
-                <h2 style={{ fontSize: '1.5rem', marginBottom: '8px' }}>Personal Records (PRs)</h2>
-                <p style={{ color: tema.textMuted, fontSize: '0.9rem', marginBottom: '24px' }}>
-                  Tus mejores marcas históricas registradas por ejercicio.
-                </p>
-
-                {calcularMejoresMarcas().length === 0 ? (
-                  <div style={{ ...cardStyle, textAlign: 'center' }}>
-                    <p style={{ color: tema.textMuted }}>No hay suficientes datos para calcular tus mejores marcas.</p>
-                  </div>
-                ) : (
-                  calcularMejoresMarcas().map((cat, idx) => (
-                    <div key={idx} style={{ marginBottom: '24px' }}>
-                      <h3 style={{ fontSize: '1.1rem', color: '#fff', marginBottom: '12px', paddingBottom: '8px', borderBottom: `1px solid ${tema.border}` }}>
-                        {cat.categoria}
-                      </h3>
-                      {cat.ejercicios.map((item, pIdx) => {
-                        const fechaPR = new Date(item.mejorSerie.fecha_sesion + 'T00:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-                        
-                        return (
-                          <div key={pIdx} style={{ ...cardStyle, marginBottom: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderLeft: '4px solid #f59e0b' }}>
-                            <div>
-                              <span style={{ display: 'block', fontWeight: '600', fontSize: '1.05rem', marginBottom: '4px' }}>{item.nombre}</span>
-                              <span style={{ fontSize: '0.85rem', color: tema.textMuted }}>{fechaPR}</span>
-                            </div>
-                            <div style={{ fontWeight: '800', fontSize: '1.15rem', color: '#f59e0b', textAlign: 'right' }}>
-                              {formatearMetricaUI(item.mejorSerie)}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ))
-                )}
-              </div>
-            )}
-
-            {subVistaEstadisticas === 'logros' && (
-              <div>
-                <h2 style={{ fontSize: '1.5rem', marginBottom: '8px', color: '#eab308' }}>Historial de Hitos 🏆</h2>
-                <p style={{ color: tema.textMuted, fontSize: '0.9rem', marginBottom: '24px' }}>
-                  Una línea temporal de todos los récords personales que has superado.
-                </p>
-
-                {historialHitos.length === 0 ? (
-                  <div style={{ ...cardStyle, textAlign: 'center' }}>
-                    <p style={{ color: tema.textMuted }}>Aún no has superado ninguna marca anterior. ¡Sigue entrenando!</p>
-                  </div>
-                ) : (
-                  historialHitos.map((hito) => {
-                    const fechaHito = new Date(hito.fecha + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
-                    
-                    return (
-                      <div key={hito.id} style={{ ...cardStyle, marginBottom: '16px', borderLeft: '4px solid #eab308', backgroundColor: '#eab3080a' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                          <span style={{ display: 'block', fontWeight: '700', fontSize: '1.1rem', color: '#fff' }}>{hito.ejercicio}</span>
-                          <span style={{ fontSize: '0.8rem', color: tema.textMuted, textTransform: 'capitalize' }}>{fechaHito}</span>
-                        </div>
-                        <p style={{ margin: 0, color: '#eab308', fontWeight: '500', fontSize: '0.95rem' }}>
-                          Has aumentado <strong style={{ fontSize: '1.1rem' }}>{hito.mensaje}</strong>
-                        </p>
-                      </div>
-                    );
-                  })
-                )}
-              </div>
-            )}
-
           </div>
         )}
 
-        {/* --- VISTA: RESUMEN DÍA (Desde Calendario/Historial) --- */}
+        {/* --- VISTA: RESUMEN DÍA --- */}
         {vista === 'resumen_dia' && sesionSeleccionada && (
           <div>
             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px'}}>
               <div>
                 <h2 style={{ fontSize: '1.5rem', margin: '0 0 4px 0' }}>{sesionSeleccionada.nombre_rutina}</h2>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <p style={{ color: tema.textMuted, fontSize: '0.9rem', margin: 0 }}>
-                    {new Date(sesionSeleccionada.fecha + 'T00:00:00').toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                  </p>
-                  {sesionSeleccionada.duracion_segundos > 0 && (
-                    <span style={{ backgroundColor: '#22c55e20', color: '#22c55e', padding: '2px 6px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold' }}>
-                      ⏱ {formatearTiempo(sesionSeleccionada.duracion_segundos)}
-                    </span>
-                  )}
-                </div>
+                <p style={{ color: tema.textMuted, fontSize: '0.9rem', margin: 0 }}>{sesionSeleccionada.fecha}</p>
               </div>
-              <button onClick={() => borrarRegistro(sesionSeleccionada.id, 'sesiones')} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '0.9rem', padding: '8px' }}>Borrar Día</button>
+              <button onClick={() => borrarRegistro(sesionSeleccionada.id, 'sesiones')} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>Borrar Día</button>
             </div>
-
-            {sesionSeleccionada.series.length === 0 ? (
-              <div style={{ ...cardStyle, textAlign: 'center', padding: '32px 16px' }}><p style={{ color: tema.textMuted, margin: 0 }}>Sin series registradas.</p></div>
-            ) : (
-              sesionSeleccionada.series.map(serie => {
-                const esRecuperacion = serie.categoria === 'recuperacion';
-                const esNota = serie.categoria === 'nota';
-                const esCalentamiento = serie.categoria === 'calentamiento';
-                const colorBorde = esCalentamiento ? '#22c55e' : (esNota ? '#3b82f6' : 'transparent');
-                
-                return (
-                  <div key={serie.id} style={{ ...cardStyle, marginBottom: '12px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: esNota ? '#1a1a1a' : tema.card, borderLeft: `2px solid ${colorBorde}` }}>
-                    <div style={{ flex: esNota ? 'none' : 1 }}>
-                      <span style={{ display: 'block', fontWeight: '600', fontSize: '1.1rem', color: esCalentamiento ? '#22c55e' : (esNota ? '#3b82f6' : '#fff') }}>
-                        {esNota ? 'Nota' : serie.ejercicio}
-                      </span>
-                      {!esNota && !esCalentamiento && <span style={{ fontSize: '0.85rem', color: esRecuperacion ? '#f59e0b' : tema.textMuted }}>{esRecuperacion ? 'Recuperación' : serie.categoria.toUpperCase()}</span>}
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flex: esNota ? 1 : 'none', marginLeft: esNota ? '12px' : 0 }}>
-                      <span style={{ fontWeight: esNota ? 'normal' : '700', fontSize: esNota ? '0.95rem' : '1.05rem', textAlign: esNota ? 'left' : 'right', fontStyle: esNota ? 'italic' : 'normal', color: esCalentamiento ? '#22c55e' : (esRecuperacion ? '#f59e0b' : (esNota ? '#ccc' : '#fff')) }}>
-                        {formatearMetricaUI(serie)}
-                      </span>
-                      <button onClick={() => borrarRegistro(serie.id, 'series')} style={{ background: 'none', border: 'none', color: tema.textMuted, cursor: 'pointer', fontSize: '1.2rem', padding: '4px' }}>✕</button>
-                    </div>
-                  </div>
-                );
-              })
-            )}
+            {sesionSeleccionada.series.map(sr => (
+              <div key={sr.id} style={{ ...cardStyle, marginBottom: '12px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>{sr.ejercicio}</span>
+                <span style={{ fontWeight: '700' }}>{formatearMetricaUI(sr)}</span>
+                <button onClick={() => borrarRegistro(sr.id, 'series')} style={{ background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer' }}>✕</button>
+              </div>
+            ))}
           </div>
         )}
 
