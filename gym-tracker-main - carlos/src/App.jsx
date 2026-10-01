@@ -300,6 +300,21 @@ export default function App() {
   const [cargando, setCargando] = useState(false);
   const [errorGlobal, setErrorGlobal] = useState(null);
 
+  // --- USUARIO LOGUEADO ---
+  const [nombreUsuario, setNombreUsuario] = useState('');
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      const u = data.user;
+      setNombreUsuario(u?.user_metadata?.nombre || u?.email?.split('@')[0] || '');
+    });
+  }, []);
+
+  const cerrarSesion = async () => {
+    localStorage.removeItem('gym_active_session');
+    await supabase.auth.signOut();
+  };
+
   const [fechaCalendario, setFechaCalendario] = useState(new Date());
   const [sesionSeleccionada, setSesionSeleccionada] = useState(null);
   
@@ -1410,7 +1425,7 @@ export default function App() {
               </div>
             )}
 
-            <h1 style={{ fontSize: '2rem', fontWeight: '700', letterSpacing: '-1px', margin: '0 0 8px 0' }}>Bienvenido Carlos</h1>
+            <h1 style={{ fontSize: '2rem', fontWeight: '700', letterSpacing: '-1px', margin: '0 0 8px 0' }}>Bienvenido {nombreUsuario}</h1>
             <div style={{ display: 'flex', gap: '12px' }}>
               <div style={{ ...cardStyle, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
                 <div style={{ width: '60px', height: '60px', borderRadius: '50%', border: '2px solid #333', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -1453,6 +1468,10 @@ export default function App() {
                  <span style={{ fontSize: '1.1rem', fontWeight: '600', color: '#3b82f6' }}>Estadísticas y Progreso</span>
                  <span>📈</span>
               </div>
+              <div onClick={cerrarSesion} style={{ ...navItemStyle, marginTop: '24px' }}>
+                <span style={{ fontSize: '1.1rem', fontWeight: '600', color: tema.textMuted }}>Cerrar sesión</span>
+                <span style={{ color: tema.textMuted }}>↪</span>
+              </div>
             </div>
           </div>
         )}
@@ -1461,7 +1480,7 @@ export default function App() {
         {vista === 'seleccion_dia' && (
           <div>
             <h2 style={{ fontSize: '1.5rem', marginBottom: '24px' }}>¿Qué desea entrenar hoy?</h2>
-            {Object.keys(rutinasDb).length === 0 ? <p style={{ color: tema.textMuted }}>Cargando rutinas...</p> : Object.entries(rutinasDb).map(([clave, datos]) => (
+            {Object.keys(rutinasDb).length === 0 ? <p style={{ color: tema.textMuted }}>Aún no tienes rutinas asignadas.</p> : Object.entries(rutinasDb).map(([clave, datos]) => (
               <div key={clave} onClick={() => iniciarRutina(clave)} style={{ ...navItemStyle, marginBottom: '16px' }}>
                 <span style={{ fontSize: '1.1rem', fontWeight: '600' }}>{datos.titulo}</span><span style={{ color: tema.textMuted }}>→</span>
               </div>
@@ -1478,7 +1497,7 @@ export default function App() {
               <input type="date" id="input-fecha-pasada" style={{ ...inputStyle, colorScheme: 'dark', cursor: 'pointer', marginBottom: '12px' }} defaultValue={new Date().toISOString().split('T')[0]} onClick={(e) => { if (e.target.showPicker) e.target.showPicker(); }} />
             </div>
             <h3 style={{ fontSize: '1.2rem', marginBottom: '16px', color: tema.textMuted, fontWeight: '600' }}>2. Selecciona la rutina</h3>
-            {Object.keys(rutinasDb).length === 0 ? <p style={{ color: tema.textMuted }}>Cargando rutinas...</p> : Object.entries(rutinasDb).map(([clave, datos]) => (
+            {Object.keys(rutinasDb).length === 0 ? <p style={{ color: tema.textMuted }}>Aún no tienes rutinas asignadas.</p> : Object.entries(rutinasDb).map(([clave, datos]) => (
               <div key={clave} onClick={() => {
                 const inputFecha = document.getElementById('input-fecha-pasada');
                 if (!inputFecha.value) { alert('Debes seleccionar una fecha.'); return; }
