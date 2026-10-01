@@ -300,16 +300,13 @@ export default function App() {
   const [cargando, setCargando] = useState(false);
   const [errorGlobal, setErrorGlobal] = useState(null);
 
-  // --- USUARIO LOGUEADO ---
   const [nombreUsuario, setNombreUsuario] = useState('');
-
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       const u = data.user;
       setNombreUsuario(u?.user_metadata?.nombre || u?.email?.split('@')[0] || '');
     });
   }, []);
-
   const cerrarSesion = async () => {
     localStorage.removeItem('gym_active_session');
     await supabase.auth.signOut();
