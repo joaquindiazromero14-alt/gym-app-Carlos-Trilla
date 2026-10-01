@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { supabase } from './supabaseClient';
 import { RUTINA_CARLOS, INFO_CARLOS, GRUPOS_CARLOS } from './rutinas/carlos';
+import { RUTINA_ELENA, INFO_ELENA, GRUPOS_ELENA } from './rutinas/elena';
 
 // ============================================================================
 // 1. CONSTANTES Y CONFIGURACIÓN VISUAL
@@ -250,8 +251,10 @@ export default function App() {
       if (nombre.toLowerCase().includes('carlos')) {
         setRutinasDb(RUTINA_CARLOS);
         setDiccionarios({ info: INFO_CARLOS, grupos: GRUPOS_CARLOS });
+      } else if (nombre.toLowerCase().includes('elena')) {
+        setRutinasDb(RUTINA_ELENA);
+        setDiccionarios({ info: INFO_ELENA, grupos: GRUPOS_ELENA });
       } else {
-        // En el futuro puedes añadir: else if (nombre === 'joaquin') setRutinasDb(RUTINA_JOAQUIN)
         // Por defecto cargamos la de Carlos
         setRutinasDb(RUTINA_CARLOS);
         setDiccionarios({ info: INFO_CARLOS, grupos: GRUPOS_CARLOS });
